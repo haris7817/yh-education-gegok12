@@ -30,5 +30,8 @@ _Honest record of what is and isn't included/verified. Nothing untested is claim
 ## 6. Explicitly excluded (not built)
 Automated WhatsApp reminders / WhatsApp API / message templates / scheduling; new payment gateways; parent web portal; native mobile apps; major UI redesign; custom dashboards or report/certificate systems; any paid module. The WhatsApp feature delivered is a **manual** click-to-chat button only.
 
-## 7. Environment-specific notes (local build machine)
+## 7. Testing hazard — upstream Feature tests wipe the database
+The 4 upstream `tests/Feature/*` tests use `RefreshDatabase` (runs `migrate:fresh`). In this setup the `phpunit.xml` sqlite isolation does **not** take effect, so running the full `vendor/bin/phpunit` / `php artisan test` executes `migrate:fresh` against the **configured MySQL database and erases all data**. **Only run the Unit suite (`vendor/bin/phpunit tests/Unit/...`) and the standalone `tests/Regression/import_qualification_regression.php` against a live DB.** Before running Feature tests, set up a real throwaway test database (`.env.testing`) and confirm the isolation applies. (Our added tests are safe; this concerns the upstream Feature suite.)
+
+## 8. Environment-specific notes (local build machine)
 - Local antivirus HTTPS scanning (AVG) had to be disabled to let containers download dependencies; `node:24` and the official `composer` image were corrupt on the host and were worked around (`node:22`, host-downloaded composer). These are local build-environment issues and do not affect the production VPS deployment.

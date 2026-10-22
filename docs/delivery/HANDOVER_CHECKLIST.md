@@ -24,7 +24,7 @@ _Final acceptance checklist for the agreed $100 engagement. Updated 2026-10-22._
 
 ## C. Pending client inputs (needed to finish)
 - [ ] **Hosting decision** — Ubuntu VPS (recommended) or Render+Aiven — and **client-owned account**
-- [ ] **`yheduhk` domain/subdomain** + DNS access
+- [ ] **`yhedu` domain/subdomain** + DNS access
 - [ ] **SMTP** provider/credentials (or confirm email stays off)
 - [ ] Official **logo / slogan / colours** for branding
 - [ ] Confirmation to proceed with **real student data** (format, data-protection, backup)
@@ -33,7 +33,7 @@ _Final acceptance checklist for the agreed $100 engagement. Updated 2026-10-22._
 ## D. Deployment (after approval — not yet done)
 - [ ] Provision VPS; install LEMP + PHP 8.4 (`DEPLOYMENT.md` §3)
 - [ ] Deploy branch; `composer install --no-dev`; build assets; production `.env` (`APP_DEBUG=false`)
-- [ ] Migrate + first admin; HTTPS via Let's Encrypt on the `yheduhk` domain
+- [ ] Migrate + first admin; HTTPS via Let's Encrypt on the `yhedu` domain
 - [ ] Remove/rename `public/installer`; lock down DB (localhost only); no public phpMyAdmin
 - [ ] Nightly DB + uploads backup configured and a **test restore** verified
 - [ ] Re-run the QA checklist against the live URL; re-time timetable/fee pages with real data

@@ -89,7 +89,7 @@ Set at minimum:
 APP_NAME="YH Education"
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://<yheduhk-domain>
+APP_URL=https://<yhedu-domain>
 TIMEZONE='Asia/Hong_Kong'
 CURRENCY_SYMBOL="HK$"
 WHATSAPP_COUNTRY_CODE=852
@@ -135,8 +135,8 @@ sudo find storage bootstrap/cache -type d -exec chmod 775 {} \;
 
 ### 3.7 Nginx + HTTPS
 - Create an Nginx server block with `root /var/www/yheducation/public;`, `fastcgi_pass unix:/run/php/php8.4-fpm.sock;` (the repo's `nginx.conf` is a close template — adjust the fastcgi socket).
-- Point the **`yheduhk`** domain/subdomain's DNS A record at the VPS IP.
-- `sudo apt install -y certbot python3-certbot-nginx && sudo certbot --nginx -d <yheduhk-domain>` for free auto-renewing TLS.
+- Point the **`yhedu`** domain/subdomain's DNS A record at the VPS IP.
+- `sudo apt install -y certbot python3-certbot-nginx && sudo certbot --nginx -d <yhedu-domain>` for free auto-renewing TLS.
 
 ### 3.8 Background jobs & scheduler
 ```bash
@@ -168,7 +168,7 @@ Restore: `gunzip < backup.sql.gz | mysql -u yhedu -p yheducation` and restore th
 
 ## 5. Client information required before deployment
 1. **Hosting decision** — VPS (recommended) or Render+Aiven; and **who owns the account** (must be client-owned; secure collaborator access only — never personal Google passwords).
-2. **Domain** — confirm the `yheduhk` domain/subdomain and DNS access.
+2. **Domain** — confirm the `yhedu` domain/subdomain and DNS access.
 3. **SMTP** provider + credentials (for login/notification emails), or confirm email stays off.
 4. **Currency** final confirmation (HK$ set).
 5. **Real student data** — only when ready, with agreed format, data-protection and backup approach.
@@ -176,7 +176,7 @@ Restore: `gunzip < backup.sql.gz | mysql -u yhedu -p yheducation` and restore th
 ---
 
 ## 6. Exact next deployment steps (after approval)
-1. Client provisions (or authorises) the VPS and provides SSH access + the `yheduhk` domain.
+1. Client provisions (or authorises) the VPS and provides SSH access + the `yhedu` domain.
 2. Run §3.1–3.7, verify the login page over HTTPS.
 3. Run the QA checklist (QA_REPORT.md) against the live URL; change the seeded admin password.
 4. Configure backups (§4) and verify a test restore.

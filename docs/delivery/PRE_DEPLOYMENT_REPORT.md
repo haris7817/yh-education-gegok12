@@ -39,7 +39,7 @@ GegoK12's seeders are partly demo-data. Environment guards are **inconsistent**:
 
 ## 5. What REQUIRES hosting or client access
 - Provisioning the server / choosing Render+Aiven; **client-owned account**.
-- The `yheduhk` domain + DNS, and Let's Encrypt TLS issuance.
+- The `yhedu` domain + DNS, and Let's Encrypt TLS issuance.
 - SMTP credentials (to enable notification emails).
 - Live QA: HTTPS login, fee/timetable timing with real data, mobile device testing, email send test.
 - Real student-data import (only after client supplies data + format/protection/backup agreed).
@@ -75,9 +75,9 @@ php artisan config:cache && php artisan route:cache && php artisan view:cache
 sudo chown -R www-data:www-data storage bootstrap/cache public/uploads
 sudo find storage bootstrap/cache -type d -exec chmod 775 {} \;
 
-# Nginx + HTTPS (point yheduhk DNS at this IP first)
+# Nginx + HTTPS (point yhedu DNS at this IP first)
 # server block root -> /var/www/yheducation/public, fastcgi_pass unix:/run/php/php8.4-fpm.sock
-sudo apt install -y certbot python3-certbot-nginx && sudo certbot --nginx -d <yheduhk-domain>
+sudo apt install -y certbot python3-certbot-nginx && sudo certbot --nginx -d <yhedu-domain>
 
 # Scheduler
 ( crontab -l 2>/dev/null; echo "* * * * * cd /var/www/yheducation && php artisan schedule:run >> /dev/null 2>&1" ) | crontab -
