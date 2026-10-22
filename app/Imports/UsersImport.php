@@ -81,19 +81,39 @@ class UsersImport implements ToCollection, WithHeadingRow
 
             try
             {
-                // --- Qualifications -------------------------------------------------
-                $qualArray = str_getcsv((string) $row['parent_qualification']);
+                // --- Qualifications --------------------------------------------------
+                // Resolve each comma-separated qualification name to a SINGLE valid id.
+                // Prefer an exact display_name match, else the first partial match.
+                // Blank, missing, duplicate and unknown values are skipped safely.
+                // $qualification_id stays [] when nothing resolves, so CreateParent
+                // creates the parent WITHOUT a qualification instead of building an
+                // invalid foreign key (the old code concatenated every matching id,
+                // which blew up on blank/ambiguous values and orphaned the student).
+                $rawQualifications = trim((string) ($row['parent_qualification'] ?? ''));
 
-                foreach ($qualArray as $i => $qualName)
+                if ($rawQualifications !== '')
                 {
-                    $ids = Qualification::whereIn('type', ['ug', 'pg'])
-                        ->where('display_name', 'LIKE', '%' . $qualName . '%')
-                        ->pluck('id')
-                        ->toArray();
+                    foreach (str_getcsv($rawQualifications) as $qualName)
+                    {
+                        $qualName = trim((string) $qualName);
 
-                    $arr[$i]                 = $ids;
-                    $qualification_array[$i] = implode('', $ids);
-                    $qualification_id[$i]     = $qualification_array[$i] === '' ? 1 : $qualification_array[$i];
+                        if ($qualName === '')
+                        {
+                            continue;
+                        }
+
+                        $resolvedId = Qualification::whereIn('type', ['ug', 'pg'])
+                                ->where('display_name', $qualName)
+                                ->value('id')
+                            ?? Qualification::whereIn('type', ['ug', 'pg'])
+                                ->where('display_name', 'LIKE', '%' . $qualName . '%')
+                                ->value('id');
+
+                        if ($resolvedId && ! in_array($resolvedId, $qualification_id, true))
+                        {
+                            $qualification_id[] = $resolvedId;
+                        }
+                    }
                 }
 
                 // --- Class / standard resolution
@@ -237,8 +257,19 @@ class UsersImport implements ToCollection, WithHeadingRow
 
                 $avatar = '';
 
-                $student = $this->CreateUser($student, $school_id, $academic_year->id, $avatar, 6);
-                $this->CreateParent($student->id, $parent, $school_id, 7);
+                // Create the student and parent atomically for this row. If the parent
+                // cannot be created/linked, roll the whole row back so we never leave an
+                // orphaned student behind; the failure is then logged and the row is
+                // recorded in $skipped_rows (never silent).
+                \DB::transaction(function () use ($student, $parent, $school_id, $academic_year) {
+                    $createdStudent = $this->CreateUser($student, $school_id, $academic_year->id, '', 6);
+
+                    $parentUser = $this->CreateParent($createdStudent->id, $parent, $school_id, 7);
+
+                    if (! $parentUser) {
+                        throw new Exception('Parent could not be created or linked for this student row.');
+                    }
+                });
 
                 $insertedcount++;
             }

@@ -1,0 +1,21 @@
+# Local dev override (additive, not committed to upstream).
+# Purpose: host port 3306 is already taken by WSL (wslrelay), so expose
+# MySQL on host port 3307 instead. The app still reaches MySQL internally
+# via the "db" service on 3306 — only the host-side mapping changes.
+services:
+  db:
+    # !override replaces the base ports list instead of appending to it,
+    # so host 3306 is NOT bound (avoids the WSL/wslrelay conflict).
+    ports: !override
+      - "3307:3306"
+
+  phpmyadmin:
+    # phpmyadmin:latest crash-loops on this Docker Desktop (apache2-foreground
+    # fails to exec). Pin to a known-good release for local use.
+    image: phpmyadmin:5.2.1
+
+  node:
+    # node:24 image layers are corrupt on this host (node binary truncated →
+    # exec format error). node:22 is current LTS and fully compatible with
+    # this laravel-mix 6 / webpack 5 / Vue 3 toolchain.
+    image: node:22

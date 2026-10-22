@@ -131,26 +131,26 @@
    						<ul class="list-reset border-r text-xs border-t">
                         <li class="flex items-center justify-between border-b py-2 px-2"> 
                            <p>Gross salary</p>
-                           <p>&#8377; {{$payroll->salary->gross_salary}}</p>
+                           <p>{{ config('app.currency_symbol') }} {{$payroll->salary->gross_salary}}</p>
                         </li>
                         <li class="flex items-center justify-between border-b py-2 px-2"> 
                            <p>Leave Deduction(LOP)</p>
-                           <p>&#8377; {{$payroll->leave_deduction}}</p>
+                           <p>{{ config('app.currency_symbol') }} {{$payroll->leave_deduction}}</p>
                         </li>
                         <li class="flex items-center justify-between border-b py-2 px-2"> 
                            <p>Total Salary</p>
-                           <p>&#8377; {{$payroll->salary->gross_salary-$payroll->leave_deduction}}</p>
+                           <p>{{ config('app.currency_symbol') }} {{$payroll->salary->gross_salary-$payroll->leave_deduction}}</p>
                         </li>
                         <li class="flex items-center justify-between border-b py-2 px-2"> 
                            <p>Salary Percentage ({{$payroll->percentage}}%)</p>
-                           <p>&#8377; {{$payroll->salarypercentage()}}</p>
+                           <p>{{ config('app.currency_symbol') }} {{$payroll->salarypercentage()}}</p>
                         </li>
 
                          @foreach($payroll->payslipitems as $payslip)
               @if($payslip->salaryitem->templateitem->payrollitem->type=='earning')
    							<li class="flex items-center justify-between border-b py-2 px-2"> 
    								<p>{{$payslip->salaryitem->templateitem->payrollitem->name}}</p>
-   								<p>&#8377; {{$payslip->amount}}</p>
+   								<p>{{ config('app.currency_symbol') }} {{$payslip->amount}}</p>
    							</li>
                         @endif
                @endforeach 
@@ -175,7 +175,7 @@
               @if($payslip->salaryitem->templateitem->payrollitem->type=='deduction')
                         <li class="flex items-center justify-between border-b py-2 px-2"> 
                            <p>{{$payslip->salaryitem->templateitem->payrollitem->name}}</p>
-                           <p>&#8377; {{round($payslip->amount)}}</p>
+                           <p>{{ config('app.currency_symbol') }} {{round($payslip->amount)}}</p>
                         </li>
                         @endif
                @endforeach 
@@ -190,11 +190,11 @@
    				<div class="flex flex-wrap">
    					<div class="w-full lg:w-1/2 px-2 text-xs flex items-center justify-between border-t border-b py-2">
    						<p>Earning Salary</p>
-   						<p>&#8377; {{$payroll->totalearnings()+$payroll->salarypercentage()}}</p>
+   						<p>{{ config('app.currency_symbol') }} {{$payroll->totalearnings()+$payroll->salarypercentage()}}</p>
    						</div>
    						<div class="w-full lg:w-1/2 text-xs px-2 flex items-center justify-between border-t border-b py-2">
    						<p>Deduction Salary</p>
-   						<p>&#8377; {{$payroll->totaldeductions()}}</p>
+   						<p>{{ config('app.currency_symbol') }} {{$payroll->totaldeductions()}}</p>
    						</div> 
    			    </div>
    			    <div class="flex flex-wrap">
@@ -202,7 +202,7 @@
    						<p class="font-semibold text-gray-600">Net Salary</p>
    					</div>
    					<div class="w-full lg:w-1/2 text-xs px-2 py-2">
-   					<p class="text-right font-semibold text-gray-600">&#8377; {{$payroll->totalsalary()}}</p>
+   					<p class="text-right font-semibold text-gray-600">{{ config('app.currency_symbol') }} {{$payroll->totalsalary()}}</p>
    					</div> 
    			    </div>
 @if($payroll->status=='paid')
@@ -219,7 +219,7 @@
    			    		<tbody>
    			    			<tr>
    			    				<td class="py-1">{{$payroll->transaction->transaction_no}}</td>
-   			    				<td class="py-1">&#8377; {{$payroll->transaction->amount}}</td>
+   			    				<td class="py-1">{{ config('app.currency_symbol') }} {{$payroll->transaction->amount}}</td>
    			    				<td class="py-1">{{$payroll->transaction->account->name}} </td>
    			    				<td class="py-1">{{$payroll->transaction->payment_method}}</td>
    			    				<td class="py-1">

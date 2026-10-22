@@ -69,6 +69,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Localisation (YH Education)
+    |--------------------------------------------------------------------------
+    | Configurable currency symbol and default WhatsApp dialling code. Both read
+    | from .env with sensible defaults, so no behaviour changes unless overridden.
+    */
+    'currency_symbol' => env('CURRENCY_SYMBOL', '₹'),
+    'whatsapp_country_code' => env('WHATSAPP_COUNTRY_CODE', '852'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Locale Configuration
     |--------------------------------------------------------------------------
     |

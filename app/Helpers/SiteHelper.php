@@ -49,6 +49,60 @@ use App\Models\User;
 class SiteHelper
 {
     /**
+     * Normalise a stored phone number into a wa.me-ready international number.
+     *
+     * Stored numbers have no country code, so a configurable default is prepended
+     * (Hong Kong = 852 by default, via the WHATSAPP_COUNTRY_CODE constant). Numbers
+     * that are already in international form (prefixed with "+", "00", or already
+     * beginning with the country code) are NOT prefixed again. Returns null when the
+     * number is empty or cannot form a valid 8–15 digit international number, so the
+     * caller can hide the button.
+     *
+     * @param  string|null  $raw          Stored phone number.
+     * @param  string|null  $countryCode  Override dialling code (digits only).
+     * @return string|null                Digits-only international number, or null.
+     */
+    public static function whatsappNumber($raw, $countryCode = null)
+    {
+        $raw = trim((string) $raw);
+        if ($raw === '') {
+            return null;
+        }
+
+        // Caller passes config('app.whatsapp_country_code'); 852 (Hong Kong) is the
+        // hard fallback so this stays usable without the framework (e.g. unit tests).
+        $countryCode = preg_replace('/\D/', '', (string) ($countryCode ?: '852'));
+
+        $hasPlus   = str_starts_with($raw, '+');
+        $digits    = preg_replace('/\D/', '', $raw);
+        $hasZeroZero = str_starts_with($digits, '00');
+
+        if ($hasPlus) {
+            // "+<cc><number>" — already international.
+            $number = $digits;
+        } elseif ($hasZeroZero) {
+            // "00<cc><number>" — strip the international access prefix.
+            $number = substr($digits, 2);
+        } elseif ($countryCode !== '' && str_starts_with($digits, $countryCode)
+            && strlen($digits) >= strlen($countryCode) + 7) {
+            // Already begins with the country code and is long enough to be a full
+            // international number — don't prepend it again.
+            $number = $digits;
+        } else {
+            // National number: drop a single leading trunk 0, then prepend the code.
+            $number = $countryCode . ltrim($digits, '0');
+        }
+
+        $number = preg_replace('/\D/', '', $number);
+
+        if (strlen($number) < 8 || strlen($number) > 15) {
+            return null;
+        }
+
+        return $number;
+    }
+
+    /**
      * Get the current academic year for a school.
      *
      * @param int|string $school_id

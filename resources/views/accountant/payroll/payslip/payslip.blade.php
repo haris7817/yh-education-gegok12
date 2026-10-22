@@ -83,13 +83,13 @@
               <tbody> 
                 <tr>
               <td width="50%">Salary</td>
-                <td style="text-align: right;"><span style="font-family:'DeJaVu Sans Mono' ">&#8377;</span>{{$payroll->salarypercentage()}}</td>
+                <td style="text-align: right;"><span style="font-family:'DeJaVu Sans Mono' ">{{ config('app.currency_symbol') }}</span>{{$payroll->salarypercentage()}}</td>
                </tr>
               @foreach($payroll->payslipitems as $payslip)
               @if($payslip->salaryitem->templateitem->payrollitem->type=='earning')  
                <tr>
                 <td width="50%">{{$payslip->salaryitem->templateitem->payrollitem->name}}</td>
-                <td style="text-align: right;"><span style="font-family:'DeJaVu Sans Mono' ">&#8377;</span>{{$payslip->amount}}</td>
+                <td style="text-align: right;"><span style="font-family:'DeJaVu Sans Mono' ">{{ config('app.currency_symbol') }}</span>{{$payslip->amount}}</td>
                </tr>    
                @endif
                @endforeach                                                          <!--                                   <tr>
@@ -111,7 +111,7 @@
               @if($payslip->salaryitem->templateitem->payrollitem->type=='deduction')  
                <tr>
                 <td width="50%">{{$payslip->salaryitem->templateitem->payrollitem->name}}</td>
-                <td style="text-align: right;"><span style="font-family:'DeJaVu Sans Mono' ">&#8377;</span>{{round($payslip->amount)}}</td>
+                <td style="text-align: right;"><span style="font-family:'DeJaVu Sans Mono' ">{{ config('app.currency_symbol') }}</span>{{round($payslip->amount)}}</td>
                </tr>    
                @endif
                @endforeach                                                   
@@ -128,7 +128,7 @@
                         <tbody>
                             <tr>
                                 <td width="50%">Total Earning</td>
-                                <td style="text-align: right;"><span style="font-family:'DeJaVu Sans Mono' ">&#8377;</span>{{$payroll->totalearnings()+$payroll->salarypercentage()}}</td>
+                                <td style="text-align: right;"><span style="font-family:'DeJaVu Sans Mono' ">{{ config('app.currency_symbol') }}</span>{{$payroll->totalearnings()+$payroll->salarypercentage()}}</td>
                             </tr>
                         </tbody>
                     </table>                    
@@ -138,7 +138,7 @@
                         <tbody>
                             <tr>
                                 <td width="50%">Total Deduction</td>
-                                <td style="text-align: right;"> <span style="font-family:'DeJaVu Sans Mono' ">&#8377;</span>{{$payroll->totaldeductions()}}</td>
+                                <td style="text-align: right;"> <span style="font-family:'DeJaVu Sans Mono' ">{{ config('app.currency_symbol') }}</span>{{$payroll->totaldeductions()}}</td>
                             </tr>
                         </tbody>
                     </table>                
@@ -146,7 +146,7 @@
             </tr>
             <tr>
                 <th>Net Salary</th>
-                <th style="text-align: right;"><span style="font-family:'DeJaVu Sans Mono' ">&#8377;</span>{{$payroll->totalsalary()}}</th>
+                <th style="text-align: right;"><span style="font-family:'DeJaVu Sans Mono' ">{{ config('app.currency_symbol') }}</span>{{$payroll->totalsalary()}}</th>
             </tr>
         </tbody>
     </table>

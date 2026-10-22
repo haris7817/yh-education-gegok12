@@ -19,12 +19,10 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # ----------------------------
-# Install Node.js (LTS version)
+# Node.js is intentionally NOT installed in the app (php-fpm) image.
+# Frontend assets are built in the dedicated `node` service (node:24).
+# This also removes a network-fragile NodeSource step from the build.
 # ----------------------------
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && node -v \
-    && npm -v
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
