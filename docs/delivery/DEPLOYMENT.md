@@ -107,9 +107,24 @@ Then:
 php artisan key:generate                  # writes a fresh APP_KEY (keep secret)
 php artisan storage:link
 php artisan migrate --force               # creates tables
-php artisan db:seed --force               # reference data + a first admin (change its password immediately)
+
+# Reference-only seeding — VERIFIED to create 0 demo students/teachers/parents.
+# Do NOT run the full `php artisan db:seed` in production: UsersStudentTableSeeder
+# is NOT environment-guarded and would insert ~330 demo students + 660 parents.
+for S in UsergroupTableSeeder CountriesTableSeeder StatesTableSeeder CitiesTableSeeder \
+  PlansTableSeeder MailTemplatesSeeder SettingsTableSeeder SmsTemplatesTableSeeder \
+  KeywordsTableSeeder QualificationTableSeeder AbsentReasonsTableSeeder RolesTableSeeder \
+  SchoolsTableSeeder SchoolDetailsTableSeeder AcademicYearsTableSeeder SectionsTableSeeder \
+  StandardsTableSeeder SubjectsTableSeeder UsersSchoolAdminTableSeeder SubscriptionsTableSeeder \
+  BooksCategoryTableSeeder BooksTableSeeder ScholasticGradesTableSeeder NonScholasticGradesTableSeeder \
+  LeaveTypesTableSeeder RoleUsersTableSeeder PageCategoryTableSeeder PayCategoryTableSeeder \
+  PayrollItemTableSeeder TransactionTypeTableSeeder TrasactionAccountTableSeeder TagSeeder; do
+  php artisan db:seed --class=$S --force
+done
+
 php artisan config:cache && php artisan route:cache && php artisan view:cache
 ```
+> **After seeding:** immediately change the seeded admin (`demoschool@mailinator.com`) email + password, and remove/rename the demo support-staff accounts (librarian / receptionist / accountant / stock_keeper `@mailinator.com`). The admin then creates the real classes/sections, teachers, and imports students. This reference-only seed was validated on a throwaway database: 0 errors, reference data + subscription present, **0 students / teachers / parents**.
 > Student data: do **not** import real records until the client supplies them and the format/data-protection/backup approach is confirmed. The verified Excel template and importer are documented in `QA_REPORT.md`.
 
 ### 3.6 Permissions
