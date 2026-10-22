@@ -31,7 +31,19 @@ Administrator (SchoolAdmin), Teacher, Student, Parent, plus Librarian, Reception
 - Teacher dashboard (`/teacher/dashboard`) loads (verified).
 - Teacher-specific features (attendance entry, lesson/schedule views) are present in the application and belong to the teacher role; verify the specific day-to-day flows the centre will use during the walkthrough on the live site.
 
-## 5. Student Excel import (verified)
+## 5. Manual student registration (verified — built-in, no custom code)
+The School Admin can add a student one at a time through the built-in form (verified: the form loads and the save path creates the student with class assignment). Steps:
+
+1. Sign in as the School Admin.
+2. Go to **Students** (`/admin/students`), then click **Add Student** (`/admin/student/add`).
+3. Fill the student details: first/last name, gender, date of birth, mobile, address, etc. (an avatar/photo is optional).
+4. **Select the class and section** — this assigns the student to a class (internally the "standard-link" for the current academic year). Classes/sections must already exist (create them first under the classes area if needary).
+5. **Save** — the student is created and appears under the chosen class.
+6. **Parents:** the single-student form creates the student; link a parent via the **Parents** section (`/admin/parent/...`) — add the parent (or reuse an existing one by mobile number) and associate the child. (The Excel import, §6, creates student + parent together in one step.)
+
+> Verified: `/admin/student/add` renders and `StudentController@store` creates the student via the same `CreateUser` path (with class assignment) that the import regression exercises. No custom development needed.
+
+## 6. Student Excel import (verified)
 **Where:** Admin student area → import (uses the built-in importer).
 
 **Template:** download the sample format from the app (it produces the exact 50-column header the importer expects: `firstname, lastname, mobile_no, email, gender, date_of_birth, blood_group, class, section, address, city, state, country, pincode, …, parent_firstname, parent_lastname, parent_mobile_no, parent_qualification, …, relation`).
