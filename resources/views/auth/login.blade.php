@@ -3,6 +3,19 @@
 @section('content')
 <div class="w-full flex flex-col mx-2  lg:mx-0 md:mx-0">
 @include('layouts.partials.logo')
+{{-- School slogans (bilingual) from the school profile "moto" field. Split on "|" so
+     both the English and Chinese lines show; only affects this login view. --}}
+@php
+    $yhMoto = optional(\App\Models\SchoolDetail::where('meta_key', 'moto')->orderBy('school_id')->first())->meta_value;
+    $yhSlogans = $yhMoto ? array_values(array_filter(array_map('trim', explode('|', $yhMoto)))) : [];
+@endphp
+@if(!empty($yhSlogans))
+<div class="w-full text-center mb-4 px-4">
+    @foreach($yhSlogans as $slogan)
+        <p class="text-sm md:text-base text-gray-600 leading-relaxed break-words">{{ $slogan }}</p>
+    @endforeach
+</div>
+@endif
 <div class="w-full lg:w-1/3 p-8 mx-auto bg-white relative">
   @include('partials.message')
   <div class="justify-content-center">

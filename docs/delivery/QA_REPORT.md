@@ -71,5 +71,20 @@ _Environment: local Docker (app php-fpm 8.4, nginx :8090, MySQL 8.4 `school`, no
 
 - **Android parent app availability/compatibility.** Backend API is present (`POST /api/parent/login`, served by `TokenController@issueToken`). The APK metadata endpoint `GET /api/apk/parent` (`ApkController@parentApp`) reads `public/android-apk/parent_apk_detail.json` — **this file and the `public/android-apk/` directory are NOT present** in the open-source core. So the **parent app binary/metadata is not bundled**; the server supports the parent app's API, but the app itself must be obtained separately from GegoK12 (e.g. a published Play Store build pointed at this server, or a vendor-provided APK). **Client decision needed.** Not developed (out of scope).
 
+## Batch 4 — Phase N (HK profile + bilingual slogans) — 2026-10-22
+
+| ID | Item | Result |
+|----|------|--------|
+| T-34 | HK validation accepts HK data; preserves Indian data; rejects moto>150 | PASS (`tests/Regression/hk_profile_validation_check.php`) |
+| T-35 | Bilingual slogans stored in `moto` (EN + 中文) | PASS |
+| T-36 | Both slogans display in login branding area | PASS (English + 言傳身教 希冀成材 render) |
+| T-37 | Chinese Unicode saved & displayed; persists | PASS (DB + login; Eloquent round-trip verified) |
+| T-38 | Profile save returns success (302) for HK data | PASS |
+| T-39 | Admin / teacher / student logins still work | PASS (302 each) |
+| T-40 | WhatsApp button unchanged | PASS (parent view untouched) |
+| T-41 | Safe test suite (Unit + import + HK checks) | PASS; guard skips MySQL-targeted tests; **dev DB intact (no wipe)** |
+
+**Caveat (T-37):** editing Chinese via the web profile form could not be conclusively verified through the curl test harness (Windows multibyte-argument encoding corrupted it to `????`). This is a **test-tool limitation**, not an app defect — the app's utf8mb4 data layer preserves Chinese (verified by Eloquent round-trip), stored Chinese displays correctly, and there is no input-sanitizing middleware. **Confirm Chinese form-editing in a real browser at UAT.**
+
 ## Still pending (next: deployment preparation)
 - Mobile responsiveness spot-check · production asset rebuild (committed assets serve fine today) · security review (phpMyAdmin/DB port exposure for prod) · payslip HK$ visual check (needs a payroll record).

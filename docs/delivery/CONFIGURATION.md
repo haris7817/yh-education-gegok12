@@ -29,11 +29,30 @@ So the form rejects valid HK details. The task-permitted **safe one-time configu
 ## 3. Not configured — pending client asset
 - **Logo:** not generated/invented. Upload is pending the client's official logo (built-in: school profile `school_logo`, or site `sitelogo`). Leave as-is until supplied.
 
-## 4. Requires developer assistance (outside built-in config — not implemented)
-- **Slogans (EN + 中文):** the only slogan-like field, `moto`, has `max:50` validation — the English slogan alone is 51 characters — **and `moto` is not rendered in any view**. So it can neither hold both slogans (validation) nor display them. Storing them there was therefore **not** done (per the task proviso "provided this does not break its display or validation"). A minimal change (raise `moto` to e.g. `max:150` and render it) would enable it. **Flagged for approval; not implemented.**
-- **School colours / theme:** no built-in theme-colour setting exists. Not implemented (and a theme editor is explicitly out of scope).
-- **HK-friendly profile form:** relaxing the India-centric validation (phone/pincode/affiliation) would make the built-in edit form usable for YH Education. Minor change, flagged for approval.
-- **Chinese address as a separate field:** stored combined with the English address (one `address` field exists). A dedicated 中文 address field would need a minor addition.
+## 4. Phase N — approved minor changes (implemented)
+- **Bilingual slogans (EN + 中文):** stored in the existing `moto` meta field as
+  `Nurturing Youthful Minds, Embracing Holistic Growth | 言傳身教 希冀成材`. `moto`
+  validation raised **50 → 150** chars (`DetailRequest`) to hold both. Displayed in the
+  existing **login branding area** (`auth/login.blade.php`, under the logo) — split on
+  `|` so the English and Chinese lines each show; mobile-safe (`text-center`, `break-words`,
+  responsive text). Only this view is affected; editable via the existing `moto` form field.
+- **Hong Kong school-profile form:** `DetailRequest` validation relaxed so legitimate HK
+  data is accepted — `landline_no` and `pincode` are now optional and format-free (HK
+  phones are 8 digits / +852; HK has no PIN codes), and `affiliated_by`/`affiliation_no`/
+  `board`/`date_of_establishment` are now optional. Name/address/location unchanged.
+  Verified: HK data passes, existing Indian-format data still passes, over-150 `moto`
+  still rejected (`tests/Regression/hk_profile_validation_check.php`).
+- **Chinese Unicode:** stored and displayed correctly (utf8mb4; Eloquent round-trip
+  verified). **Note:** editing Chinese via the web profile form should be confirmed in a
+  real browser at UAT — the automated curl test harness (Windows) mangled multibyte
+  argument bytes, which is a test-tool limitation, not an app defect (the app's data
+  layer preserves Chinese).
 
-## 5. Test-safety safeguard (see KNOWN_LIMITATIONS §7)
+## 5. Still requires developer assistance / client input (not implemented)
+- **School colours / theme:** no built-in theme-colour setting (a theme editor is out of scope).
+- **Logo:** pending the client's official asset (upload via school profile / site settings).
+- **Dedicated 中文 address field:** the Chinese address is currently combined with the
+  English one in the single `address` field; a separate field would need a minor addition.
+
+## 6. Test-safety safeguard (see KNOWN_LIMITATIONS §7)
 `tests/TestCase.php` now aborts (skips) any test whose database is not in-memory SQLite, **before** `RefreshDatabase`'s `migrate:fresh` can run — so the dev MySQL DB can never be wiped by the test suite. Backed by `.env.testing` and `phpunit.xml` (`force="true"` sqlite). Verified: the guard skips MySQL-targeted tests; the dev DB stayed intact; the Unit suite + import regression still pass.

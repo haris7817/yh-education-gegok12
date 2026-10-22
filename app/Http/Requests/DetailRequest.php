@@ -79,19 +79,23 @@ class DetailRequest extends FormRequest
 
         $rules = 
         [
+            // Hong Kong friendly: contact/affiliation fields made optional and
+            // format-relaxed (HK has 8-digit phones, no Indian-style PIN codes,
+            // and tutorial centres have no school board/affiliation). moto length
+            // raised to hold the bilingual slogan. Name/address/location unchanged.
             'name'                  =>  'required|max:30|checkunique_schoolname|check_keyword',
-            'moto'                  =>  'required|max:50',
-            'affiliated_by'         =>  'required|max:100',
-            'affiliation_no'        =>  'required|numeric',
-            'date_of_establishment' =>  'required|check_date',
-            'board'                 =>  'required',
-            'landline_no'           =>  'required|numeric|digits:10',
-            'about_us'              =>  'required|max:250',
+            'moto'                  =>  'required|max:150',
+            'affiliated_by'         =>  'nullable|max:100',
+            'affiliation_no'        =>  'nullable|numeric',
+            'date_of_establishment' =>  'nullable|check_date',
+            'board'                 =>  'nullable',
+            'landline_no'           =>  'nullable|max:20',
+            'about_us'              =>  'nullable|max:250',
             'country_id'            =>  'required',
             'state_id'              =>  'required',
             'city_id'               =>  'required',
-            'pincode'               =>  'required|numeric|digits:6',
-            'website'               =>  'nullable|check_website',   
+            'pincode'               =>  'nullable|max:20',
+            'website'               =>  'nullable|check_website',
             'admission_open'        =>  'required',
         ];
 
