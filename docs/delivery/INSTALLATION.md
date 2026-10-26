@@ -23,6 +23,9 @@ docker compose exec app php artisan key:generate
 docker compose exec -e COMPOSER_PROCESS_TIMEOUT=0 app php artisan migrate --force
 docker compose exec -e COMPOSER_PROCESS_TIMEOUT=0 app php artisan db:seed --force   # synthetic/reference data
 docker compose exec node npm install && docker compose exec node npm run production  # build assets
+# Required: let php-fpm (www-data) write Laravel's cache/session/lock files.
+# Without this, failed-login attempts 500 (the rate limiter can't create its lock).
+docker compose exec app chmod -R a+rwX storage/framework bootstrap/cache
 ```
 Then open **http://localhost:8090/** (login page). phpMyAdmin (local only): http://localhost:8092/.
 

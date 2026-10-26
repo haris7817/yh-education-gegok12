@@ -26,5 +26,10 @@ All changes are minimal and maintainable, kept compatible with upstream GegoK12.
 - `tests/Unit/WhatsappNumberTest.php` — 9 unit tests for phone normalisation (all pass).
 - `tests/Regression/import_qualification_regression.php` — re-runnable import regression against the seeded local DB (insert / skip / blank+unknown qualification / duplicate parent / no-orphan). All pass.
 
+## Final audit (2026-10-26)
+- **Fixed:** failed-login HTTP 500 — php-fpm (`www-data`) could not create the rate-limiter lock in `storage/framework/cache/data` (root-owned 755). Local fix `chmod -R a+rwX storage/framework bootstrap/cache` added to INSTALLATION.md; the production runbook's `www-data` ownership already prevents it on the server.
+- **ARM64 audit:** full compatibility confirmed for Oracle Ampere A1 / Ubuntu 24.04 Minimal aarch64 (no native PHP/npm dependencies); Oracle-specific deployment guide added.
+- **Client delivery pack added:** `YH_EDUCATION_100_SCOPE_AUDIT.md`, `YH_EDUCATION_TEST_RESULTS.md`, `YH_EDUCATION_DEPLOYMENT_GUIDE.md`, `YH_EDUCATION_ADMIN_GUIDE.md`, `YH_EDUCATION_PENDING_CLIENT_ITEMS.md`, `YH_EDUCATION_FINAL_DELIVERY_CHECKLIST.md`.
+
 ## Documentation
 - `docs/delivery/` — PROGRESS, QA_REPORT, SCOPE_REVIEW, CHANGELOG.
