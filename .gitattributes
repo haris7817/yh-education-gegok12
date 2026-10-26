@@ -6,3 +6,4 @@ CHANGELOG.md export-ignore
 # Deployment kit must always be LF — these files execute on Linux.
 deploy/** text eol=lf
 *.sh text eol=lf
+docs/delivery/CHANGELOG.md -export-ignore
