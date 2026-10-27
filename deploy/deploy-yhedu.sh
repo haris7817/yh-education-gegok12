@@ -103,6 +103,9 @@ phase_app(){ need_root; say "APP: extract release, install, configure, migrate, 
   chown -R www-data:www-data storage bootstrap/cache public/uploads 2>/dev/null || chown -R www-data:www-data storage bootstrap/cache
   find storage bootstrap/cache -type d -exec chmod 775 {} \;
   php artisan config:cache && php artisan route:cache && php artisan view:cache
+  # re-own: the artisan cache commands above ran as root and may have created
+  # root-owned files (compiled views, today's log) that php-fpm must write/read
+  chown -R www-data:www-data storage bootstrap/cache
   # ---- scheduler ----
   ( { crontab -l 2>/dev/null | grep -v 'schedule:run'; } || true; echo "* * * * * cd ${APP_DIR} && sudo -u www-data php artisan schedule:run >> /dev/null 2>&1" ) | crontab -
 }
@@ -151,6 +154,7 @@ phase_https(){ need_root; say "HTTPS: certbot for domain $1 + secure cookies"
   sed -i "s|^APP_URL=.*|APP_URL=https://${DOMAIN}|" .env
   sed -i "s|^SESSION_SECURE_COOKIE=.*|SESSION_SECURE_COOKIE=true|" .env
   php artisan config:cache
+  chown -R www-data:www-data storage bootstrap/cache
   echo "HTTPS live at https://${DOMAIN}"
 }
 
