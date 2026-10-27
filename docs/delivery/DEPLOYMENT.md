@@ -148,7 +148,7 @@ sudo find storage bootstrap/cache -type d -exec chmod 775 {} \;
 
 ### 3.9 Go-live security checklist
 - `APP_DEBUG=false`, `APP_ENV=production` ✅
-- **Remove/rename `public/installer`** and delete `storage/installed` only if using CLI install (not the web installer).
+- **Remove/rename `public/installer`** (the web installer). ⚠️ Keep `storage/installed` — the app requires this marker at runtime (settings loading is skipped without it).
 - `.env` not web-readable (it's below `public/`), never committed.
 - **No phpMyAdmin / no public DB port** (3306 bound to localhost only; not in `ufw`).
 - Strong, unique DB and admin passwords; change the seeded admin password on first login.

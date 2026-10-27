@@ -99,7 +99,7 @@ Also back up `public/uploads` and `storage/app` offsite. **Test a restore before
 
 ## 9. Go-live security checklist
 - `APP_ENV=production`, `APP_DEBUG=false`, fresh `APP_KEY`; `.env` never committed
-- **Delete or rename `public/installer/`** and remove `storage/installed` (CLI install used instead)
+- **Delete or rename `public/installer/`** (the web installer). ⚠️ Do **NOT** delete `storage/installed` — the app requires it at runtime (AppServiceProvider skips loading the settings table without it and the login page shows "maintenance").
 - Seeded admin credentials rotated; demo staff accounts removed
 - MySQL on localhost only; no phpMyAdmin; HTTPS enforced; `sudo apt install unattended-upgrades`
 - Never run `php artisan db:seed` (plain) or the phpunit Feature suite on this server (both are destructive — see `KNOWN_LIMITATIONS.md` §7)
