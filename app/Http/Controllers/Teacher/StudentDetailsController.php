@@ -281,15 +281,24 @@ class StudentDetailsController extends Controller
     }
     public function showFees($name)
     {
+        // The Fee module is a paid GegoK12 add-on; App\Models\Fee does not exist in the
+        // open-source core (mirrors the guard in Admin\StudentDetailsController@showFees).
+        if (! class_exists('Gegok12\Fee\Models\Fee')) {
+            return [];
+        }
+
         $student = User::where('name', $name)->first();
 
         $school_id = Auth::user()->school_id;
         $academic_year = SiteHelper::getAcademicYear($school_id);
 
-        $fees = Fee::where([['school_id',$school_id],['academic_year_id',$academic_year->id]])->where('standardLink_id',$student->studentAcademicLatest->standardLink_id)->orWhere('standardLink_id',null)->orderBy('start_date','DESC')->paginate(5);
+        $fees = \Gegok12\Fee\Models\Fee::where([['school_id',$school_id],['academic_year_id',$academic_year->id]])->where('standardLink_id',$student->studentAcademicLatest->standardLink_id)->orWhere('standardLink_id',null)->orderBy('start_date','DESC')->paginate(5);
 
-        $feepayments = UserFeesResource::collection($fees);
-         
+        $feepayments = [];
+        if (class_exists('Gegok12\Fee\Http\Resources\UserFees')) {
+            $feepayments = \Gegok12\Fee\Http\Resources\UserFees::collection($fees);
+        }
+
         return $feepayments;
     }
 

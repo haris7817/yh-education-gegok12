@@ -268,6 +268,14 @@ class ReportsController extends Controller
      */
     public function exportFee(Request $request)
     {
+        // The Fee module is a paid GegoK12 add-on; the feePayment relation would
+        // resolve to the missing App\Models\FeePayment class without it.
+        if (! class_exists('Gegok12\Fee\Models\FeePayment')) {
+            $csv = Writer::createFromFileObject(new \SplTempFileObject());
+            $csv->insertOne(['Fee module is not installed - no fee payment records exist.']);
+            $csv->output('SP Student Export Fee Payment'.date('_d-m-Y_H:i').'.csv');
+            return;
+        }
         try
         {
             if(count($request->request) > 0)

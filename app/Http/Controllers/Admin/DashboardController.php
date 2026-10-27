@@ -131,7 +131,10 @@ class DashboardController extends Controller
      */
     public function structuralList()
     {
-        //
+        // The Fee module is a paid GegoK12 add-on; without it App\Models\FeeGroup does not exist.
+        if (! class_exists('Gegok12\Fee\Models\Fee')) {
+            return response()->json(['data' => [], 'message' => 'Fee module is not installed.']);
+        }
         $school_id = Auth::user()->school_id;
         $academic_year = SiteHelper::getAcademicYear($school_id);
         $feelists = FeeGroup::where('school_id',$school_id)->whereHas('fee',function($query) use($school_id,$academic_year){
@@ -150,7 +153,9 @@ class DashboardController extends Controller
      */
     public function showStructuralList(Request $request)
     {
-        //
+        if (! class_exists('Gegok12\Fee\Models\Fee')) {
+            return response()->json(['data' => [], 'message' => 'Fee module is not installed.']);
+        }
         try
         {
             $school_id = Auth::user()->school_id;
@@ -178,7 +183,9 @@ class DashboardController extends Controller
      */
     public function unpaidList($status)
     {
-        //
+        if (! class_exists('Gegok12\Fee\Models\Fee')) {
+            return response()->json(['data' => [], 'message' => 'Fee module is not installed.']);
+        }
         $school_id = Auth::user()->school_id;
         $academic_year = SiteHelper::getAcademicYear($school_id);
         $fees = Fee::where([['school_id',$school_id],['academic_year_id',$academic_year->id]]);
@@ -252,6 +259,9 @@ class DashboardController extends Controller
      */
     public function feeslist($fee_id)
     {
+        if (! class_exists('Gegok12\Fee\Models\Fee')) {
+            return ['unpaidCount' => 0, 'unpaidList' => [], 'message' => 'Fee module is not installed.'];
+        }
         $fees = Fee::where('id',$fee_id)->first();
 
         $unpaidfees  = FeePayment::where('fee_id',$fees->id)->where('status',0);
@@ -282,7 +292,9 @@ class DashboardController extends Controller
      */
     public function sendReminder(Request $request,$fee_id)
     {
-        //
+        if (! class_exists('Gegok12\Fee\Models\FeePayment')) {
+            return response()->json(['message' => 'Fee module is not installed.']);
+        }
         try
         {
             $user = User::where('name',$request->name)->first();

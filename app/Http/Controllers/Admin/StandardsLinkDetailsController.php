@@ -555,8 +555,14 @@ class StandardsLinkDetailsController extends Controller
 
         if(Gate::allows('standardlink',$standardLink))
         {
+            // The Fee module is a paid GegoK12 add-on; the else-branches below reference
+            // App\Models\Fee / FeePayment classes that do not exist in the open-source core.
+            if (! class_exists('Gegok12\Fee\Models\Fee')) {
+                return ['feelist' => [], 'message' => 'Fee module is not installed.'];
+            }
+
             $academic_year = SiteHelper::getAcademicYear(Auth::user()->school_id);
-            
+
             //new condition
             if(class_exists('Gegok12\Fee\Models\Fee'))
             {
