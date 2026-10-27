@@ -4,6 +4,8 @@ _Audit date: 2026-10-27/28 · Auditor role: scope & technical verification · Pr
 
 **Method.** Evidence-based, audit-first. No production data was modified; no features were implemented. New functional tests were run on the **local** Docker stack (identical code) and safe read-only / disposable checks on production (backup restore into a throwaway DB, immediately dropped). Companion docs: `ORIGINAL_SCOPE_VS_CLIENT_SPECIFICATION.md` (agreement evidence), `EXISTING_GEGOK12_FEATURE_VERIFICATION.md` (core vs paid add-ons), `MOBILE_APP_INTEGRATION_FEASIBILITY.md`, `FINAL_UAT_CHECKLIST.md`, `REMAINING_WORK_AND_ESTIMATES.md`.
 
+> **Addendum 2026-10-28:** the two confirmed delivery gaps below were closed after this audit: (R9) three demo accounts — teacher, student, parent — now exist in production and are login/RBAC-verified (P-17/P-18 in `YH_EDUCATION_TEST_RESULTS.md`); (R4 defect side) all fee endpoints that crashed on the missing paid add-on now degrade gracefully (commit `898da2e4`, P-16). The scope classifications themselves are unchanged.
+
 **Critical context discovered by this audit:** GegoK12's open-source core does **not** contain the Fee module or the Exam/Gradebook module. Both are paid vendor add-ons (`Gegok12\Fee\*`, `Gegok12\Exam\*` composer packages, referenced only behind `class_exists()` guards). Several core routes assume the add-ons and **crash (HTTP 500)** without them — reproduced and logged (`Class "App\Models\Fee" not found`). Earlier delivery reports described fee pages as "accessible"; that statement was based on page-level HTTP 200s and is **corrected** by this audit.
 
 ---

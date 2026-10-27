@@ -8,6 +8,7 @@ _Updated 2026-10-27 — **the site is LIVE at https://yheduhk.duckdns.org**. Eve
 | 1 | **Admin credentials** | Login: `yh.eduhk@gmail.com`. The generated password is on the server in `/home/deploy/YHEDU_CREDENTIALS.txt` (permissions 600; also holds the DB password). Retrieve it over SSH, store it in your password manager, then delete the file: `shred -u /home/deploy/YHEDU_CREDENTIALS.txt`. Change the password after first login if you prefer your own. |
 | 2 | **Client acceptance test** | Log in, click through students/teachers/attendance, confirm all good (UAT list below). |
 | 3 | **Revoke temporary sudo** (after you confirm the site works) | From the `ubuntu` admin account: `sudo rm /etc/sudoers.d/deploy` — the deploy user then returns to non-privileged access. **Not revoked yet, by agreement, pending your confirmation.** |
+| 4 | **Demo test accounts** (added 2026-10-28) | Three working demo accounts (teacher, student, parent) + one demo class exist for your acceptance testing. Credentials: `/home/deploy/YHEDU_DEMO_ACCOUNTS.txt` (permissions 600) — retrieve over SSH, then `shred -u` the file. All three logins + role boundaries verified live. The parent account works through the mobile API (parents have no web portal in GegoK12). Delete or re-password these accounts after UAT. |
 
 ## 10–15 minute UAT (live site)
 1. Create a class/section, add a teacher, add a student — then **mark attendance** for that class, reload, confirm saved.

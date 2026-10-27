@@ -6,7 +6,7 @@ _2026-10-27 · Split into: (A) needed for $100 acceptance, (B) small goodwill fi
 
 | Item | Missing functionality | Root cause | Type | Est. | Risk | Dependencies |
 |---|---|---|---|---|---|---|
-| A1. Three functional test accounts (teacher, student, parent) | Prod has only admin + 4 locked demo staff; groups 5/6/7 empty | QA accounts were disposable by instruction and removed after verification | Configuration | 0.5–1 h | Low | Needs one class/section to exist (can be created live with the client during UAT — C1–C3 of the checklist) |
+| A1. Three functional test accounts (teacher, student, parent) | ~~Prod has only admin + 4 locked demo staff~~ **DONE 2026-10-28** — demo teacher/student/parent + demo class created and login/RBAC-verified live (P-17/P-18); credentials in `/home/deploy/YHEDU_DEMO_ACCOUNTS.txt` | — | Configuration | done | — | — |
 | A2. Client UAT + sign-off | Client confirmation of acceptance | Process step | Client action (we support) | — | Low | `FINAL_UAT_CHECKLIST.md`; admin credentials pickup |
 | A3. Revoke temporary sudo | — | Awaiting client confirmation (by agreement) | Client action | 5 min | Low | A2 |
 
@@ -14,7 +14,7 @@ _2026-10-27 · Split into: (A) needed for $100 acceptance, (B) small goodwill fi
 
 | Item | Detail | Type | Est. | Risk |
 |---|---|---|---|---|
-| B1. Guard the two crashing fee endpoints | `/admin/dashboard/feeslist/{id}` and `/admin/dashboard/unpaidList/{status}` return HTTP 500 in **stock upstream code** when the paid Fee add-on is absent (`Class "App\Models\Fee" not found`). Add the same `class_exists` guard upstream already uses elsewhere → graceful empty response. Reachable from the delivered dashboard UI, so a user can hit it by normal clicking | Code (defensive) | 1–2 h incl. test | Low |
+| B1. Guard the crashing fee endpoints | **DONE 2026-10-28** (commit `898da2e4`, deployed, P-16): all reachable fee endpoints that referenced missing paid-add-on classes (`feeslist`, `unpaidList`, `structuralList` ×2, `sendReminder`, admin/teacher `standardLink show fees`, teacher student fees, fee CSV export) now return a graceful empty response with "Fee module is not installed." | Code (defensive) | done | — |
 | B2. SMTP configuration | Password-reset/notification emails off until client supplies an SMTP account | Configuration | 0.5 h | Low — must never enable `MAIL_STATUS=on` without working SMTP |
 
 ## C. Separate paid work / client decisions (outside the $100 agreement)

@@ -21,6 +21,16 @@ Deployed to the client's Oracle Ampere A1 (Ubuntu 24.04 ARM64, 129.150.50.78) vi
 | P-13 | Web installer disabled (`public/installer` moved out of webroot); `storage/installed` runtime marker present | PASS |
 | P-14 | Log sweep: zero unexplained errors (all 5 entries were the fixed first-run Faker failure, tinker psysh-home artifacts, and one null view during a failed QA fetch) | PASS |
 
+### 0b. Post-audit fix deployment (2026-10-28) — all against the live site
+
+| # | Check | Result |
+|---|---|---|
+| P-15 | Pre-change backup taken (`db-2026-10-28.sql.gz` + uploads in `/var/backups/yhedu/`) | PASS |
+| P-16 | **Fee-endpoint guards deployed** (5 controllers; fix for missing paid Fee add-on). Authenticated admin: `feeslist/1`, `unpaidList/null`, `structuralList`, `standardLink/show/fees/1`, `report/fees` → all **200** with empty data + "Fee module is not installed." (previously HTTP 500 / crash class `App\Models\Fee` not found). Locally regression-tested first: unit suite OK (10 tests), import + HK-validation regressions ALL PASSED | PASS |
+| P-17 | **Three demo accounts created** (demo teacher, demo student, demo parent + one demo class, factory data only, no real students). Credentials only in `/home/deploy/YHEDU_DEMO_ACCOUNTS.txt` (600) | PASS |
+| P-18 | **Demo logins & boundaries verified live**: teacher → `/teacher/dashboard` 200, `/admin/dashboard` blocked (302); student → `/student/dashboard` 200, `/admin/*` blocked (302); parent → mobile API login issues sanctum token, `/api/v2/my-children` 200 (parents have no web portal by design); wrong passwords → 302 + error (no 500s); viewport/responsive meta present on both dashboards | PASS |
+| P-19 | Official logo confirmed in production: `/images/yh-education-logo.png` → 200 (354 KB), login page `<img … alt="YH Education">`; log sweep: zero new errors since the deploy (latest log entries all predate it and are the known rollout artifacts) | PASS |
+
 **Deployment defects found & fixed during rollout** (all committed):
 1. Faker was a dev-only dependency but the reference seeders use model factories → first seed run failed under `--no-dev`; `fakerphp/faker` moved to production requires.
 2. `storage/installed` is a **required runtime marker** (AppServiceProvider skips loading the settings table without it → login shows "maintenance"); the script/docs wrongly removed it — corrected to ensure it exists.

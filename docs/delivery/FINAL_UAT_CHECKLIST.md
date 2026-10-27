@@ -26,7 +26,7 @@ _Site: **https://yheduhk.duckdns.org** · Please tick each item Pass/Fail and no
 | # | Test | Steps | Expected | Our status |
 |---|---|---|---|---|
 | C1 👤 | Create class & section | Admin → Standards/Classes → add one | Saved and listed | ⬜ |
-| C2 👤 | Create a teacher | Add teacher with email+password; log in as them in a private window | Teacher sees own dashboard; cannot open /admin pages | ✅ (tested with disposable account) / ⬜ repeat with your real one |
+| C2 👤 | Create a teacher | Add teacher with email+password; log in as them in a private window — **or use the ready-made demo accounts** (see `/home/deploy/YHEDU_DEMO_ACCOUNTS.txt` on the server: demo teacher, demo student, demo parent, all verified working 2026-10-28) | Teacher sees own dashboard; cannot open /admin pages | ✅ verified live 2026-10-28 with the demo accounts |
 | C3 👤 | Create a student | Add student assigned to the class | Appears in students list | ⬜ |
 | C4 👤 | Excel import (optional now) | Download template, import 2–3 test rows | Students + parents created, duplicates linked | 🧪 regression-tested |
 | C5 👤 | **Attendance** | Attendance → Add → pick class, date, session (forenoon/afternoon), mark an absentee → save → reload list | "Attendance Added Successfully"; absentee appears in list/history | 🧪 end-to-end save proven 2026-10-28 |
@@ -37,7 +37,7 @@ _Site: **https://yheduhk.duckdns.org** · Please tick each item Pass/Fail and no
 ## D. Not available in this edition — do NOT test
 | Area | Why |
 |---|---|
-| 🚫 Fee records, invoices, PDF receipts | Fee module is a paid GegoK12 add-on, not in the open-source core. **Avoid the fee links on the admin dashboard** — two of them produce an error page in the stock code. See `REMAINING_WORK_AND_ESTIMATES.md` for options |
+| 🚫 Fee records, invoices, PDF receipts | Fee module is a paid GegoK12 add-on, not in the open-source core. The fee links on the dashboard are now safe to click (fixed 2026-10-28): they show empty results with a "Fee module is not installed." note instead of an error page. See `REMAINING_WORK_AND_ESTIMATES.md` for options |
 | 🚫 Exams, gradebook, report cards, marks analytics | Paid GegoK12 add-on (same options) |
 | 🚫 Parent web login | Parents use the vendor's mobile app (see mobile feasibility doc); no web portal exists in GegoK12 |
 | 🚫 Email notifications / password-reset emails | Off until you provide an SMTP account (then a 10-minute config) |
