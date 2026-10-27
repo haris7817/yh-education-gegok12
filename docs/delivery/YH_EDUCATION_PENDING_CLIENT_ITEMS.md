@@ -20,7 +20,7 @@ _Updated 2026-10-27 — **the site is LIVE at https://yheduhk.duckdns.org**. Eve
 | # | Item | Detail |
 |---|---|---|
 | 4 | **SMTP (email)** | Password-reset / notification emails are OFF until supplied. Then: edit `/var/www/yheducation/.env` → `MAIL_MAILER=smtp`, host/port/user/pass, `MAIL_STATUS=on`, run `php artisan config:cache`. ⚠️ Never set `MAIL_STATUS=on` without working SMTP (logins would error). |
-| 5 | **Official logo** (PNG/JPG) | Upload in School Details → School Logo, and Settings → site logo/favicon. Login page shows the GegoK12 placeholder until then. |
+| 5 | ~~Official logo~~ **DONE 2026-10-27** | Client logo (言希教育 badge) deployed: login page, sitelogo + favicon settings, school-profile logo. Replaceable anytime via Settings → General Settings. |
 | 6 | **Real student data** | Import the ~60 students via the Excel template (admin guide §6) once classes exist. Backups run nightly beforehand. |
 | 7 | **WhatsApp centre number** | The per-parent chat button is live. A single centre-wide contact button would be a small separate addition — confirm if wanted. |
 | 8 | **Domain note** | `yheduhk.duckdns.org` is a free DuckDNS name — fine to run on; a paid custom domain can be pointed at 129.150.50.78 later (one certbot command adds it). |
