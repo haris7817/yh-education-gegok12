@@ -15,7 +15,7 @@ DB_USER="$(grep '^DB_USERNAME=' ${APP_DIR}/.env | cut -d= -f2)"
 DB_PASS="$(grep '^DB_PASSWORD=' ${APP_DIR}/.env | cut -d= -f2)"
 
 mkdir -p "${OUT}" && chmod 700 "${OUT}"
-MYSQL_PWD="${DB_PASS}" mysqldump -u "${DB_USER}" --single-transaction --routines "${DB_NAME}" | gzip > "${OUT}/db-${STAMP}.sql.gz"
+MYSQL_PWD="${DB_PASS}" mysqldump -u "${DB_USER}" --single-transaction --no-tablespaces --routines "${DB_NAME}" | gzip > "${OUT}/db-${STAMP}.sql.gz"
 tar -czf "${OUT}/uploads-${STAMP}.tar.gz" -C / "var/www/yheducation/public/uploads" "var/www/yheducation/storage/app" 2>/dev/null || true
 find "${OUT}" -type f -mtime +14 -delete
 echo "$(date -Is) backup ok: db-${STAMP}.sql.gz $(du -h ${OUT}/db-${STAMP}.sql.gz | cut -f1)"
