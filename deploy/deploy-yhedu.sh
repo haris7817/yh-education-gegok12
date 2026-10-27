@@ -140,7 +140,10 @@ phase_web(){ need_root; say "WEB: nginx site (IP-based HTTP first) + smoke test"
   echo "smoke: /login -> HTTP ${CODE}; YH branding: $(grep -c 'YH Education' /tmp/yhedu_smoke.html || true)"
   # security: disable the web installer (CLI install was used)
   [ -d "${APP_DIR}/public/installer" ] && mv "${APP_DIR}/public/installer" "${APP_DIR}/installer.disabled" && echo "public/installer disabled"
-  rm -f "${APP_DIR}/storage/installed"
+  # storage/installed must EXIST at runtime: AppServiceProvider skips loading the
+  # settings table without it (login page falls back to "maintenance"). Ensure it.
+  [ -f "${APP_DIR}/storage/installed" ] || date "+%Y-%m-%d %H:%M:%S" > "${APP_DIR}/storage/installed"
+  chown www-data:www-data "${APP_DIR}/storage/installed"
 }
 
 phase_https(){ need_root; say "HTTPS: certbot for domain $1 + secure cookies"
