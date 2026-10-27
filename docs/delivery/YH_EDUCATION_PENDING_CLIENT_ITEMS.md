@@ -1,35 +1,32 @@
 # YH Education — Pending Client Items
 
-_What we need from YH Education to finish. Everything not listed here is complete and verified locally (see `YH_EDUCATION_100_SCOPE_AUDIT.md`). Updated 2026-10-26._
+_Updated 2026-10-27 — **the site is LIVE at https://yheduhk.duckdns.org**. Everything below is what remains._
 
-## Blocking deployment (nothing can go live without these)
+## Handover (now)
 | # | Item | Detail |
 |---|---|---|
-| 1 | **SSH access to the Oracle server** | Server `129.150.50.78` (Ubuntu 24.04 Minimal ARM64) is running but access is unconfirmed. Authorize this **public** deploy key for the `ubuntu` user: `ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ0jC0ypy920OL2bVNWx6JGthZ/h7oNdyIjEfqamO/Kg yhedu-deploy-20261025` — then we deploy per `YH_EDUCATION_DEPLOYMENT_GUIDE.md`. (We will never ask for passwords or private keys.) |
-| 2 | **Domain** | The preferred label is **yhedu** — confirm the exact domain/subdomain (availability not assumed) and provide DNS access, so HTTPS can be issued. |
-| 3 | **SMTP (email) account** | Needed for password-reset and notification emails (e.g. a transactional provider or Gmail SMTP for `yh.eduhk@gmail.com`). Without it the app runs fine but sends no email. |
+| 1 | **Admin credentials** | Login: `yh.eduhk@gmail.com`. The generated password is on the server in `/home/deploy/YHEDU_CREDENTIALS.txt` (permissions 600; also holds the DB password). Retrieve it over SSH, store it in your password manager, then delete the file: `shred -u /home/deploy/YHEDU_CREDENTIALS.txt`. Change the password after first login if you prefer your own. |
+| 2 | **Client acceptance test** | Log in, click through students/teachers/attendance, confirm all good (UAT list below). |
+| 3 | **Revoke temporary sudo** (after you confirm the site works) | From the `ubuntu` admin account: `sudo rm /etc/sudoers.d/deploy` — the deploy user then returns to non-privileged access. **Not revoked yet, by agreement, pending your confirmation.** |
 
-## Needed to complete branding
+## 10–15 minute UAT (live site)
+1. Create a class/section, add a teacher, add a student — then **mark attendance** for that class, reload, confirm saved.
+2. Edit the school slogan (Chinese text) in School Details, save, reload — confirm 中文 saves through the browser form.
+3. Open the site on a phone (responsiveness).
+4. Open a parent record → click **Chat on WhatsApp** → confirms the right number opens.
+5. Fee pages with your real data volume.
+
+## Optional configuration (not blockers — site runs without them)
 | # | Item | Detail |
 |---|---|---|
-| 4 | **Official logo file** (PNG/JPG) | Uploaded in two places (School Details → School Logo; Settings → site logo/favicon). The login page currently shows the upstream GegoK12 placeholder image until supplied. No logo was invented. |
-| 5 | **Colour preference** (optional) | There is **no built-in theme-colour setting** in GegoK12 — custom colours would be separate approved work. Confirm if the default theme is acceptable for launch. |
+| 4 | **SMTP (email)** | Password-reset / notification emails are OFF until supplied. Then: edit `/var/www/yheducation/.env` → `MAIL_MAILER=smtp`, host/port/user/pass, `MAIL_STATUS=on`, run `php artisan config:cache`. ⚠️ Never set `MAIL_STATUS=on` without working SMTP (logins would error). |
+| 5 | **Official logo** (PNG/JPG) | Upload in School Details → School Logo, and Settings → site logo/favicon. Login page shows the GegoK12 placeholder until then. |
+| 6 | **Real student data** | Import the ~60 students via the Excel template (admin guide §6) once classes exist. Backups run nightly beforehand. |
+| 7 | **WhatsApp centre number** | The per-parent chat button is live. A single centre-wide contact button would be a small separate addition — confirm if wanted. |
+| 8 | **Domain note** | `yheduhk.duckdns.org` is a free DuckDNS name — fine to run on; a paid custom domain can be pointed at 129.150.50.78 later (one certbot command adds it). |
 
-## Needed before real data goes in
-| # | Item | Detail |
-|---|---|---|
-| 6 | **Real student spreadsheet** + sign-off | Provide the ~60-student Excel (we map it to the verified template), confirm data-protection expectations and the backup arrangement. Only synthetic data has been used so far. |
-| 7 | **WhatsApp number confirmation** | Is `+852 54001530` the centre's WhatsApp? The delivered button chats with **each parent's** stored number (in scope). A single centre-wide contact button would be a small separate addition — tell us if wanted. |
+## Backup & recovery (already running)
+Nightly 02:15: database dump + uploads → `/var/backups/yhedu/` (14-day retention; first backup verified). Restore commands are inside `/usr/local/bin/backup-yhedu` header and `YH_EDUCATION_DEPLOYMENT_GUIDE.md`. Recommend an occasional offsite copy.
 
-## One-time checks at go-live (10–15 minutes together, UAT)
-| # | Check | Why |
-|---|---|---|
-| 8 | Mark attendance for one class, reload, confirm saved | The save click-through is the one flow not machine-verified |
-| 9 | Edit the slogan (Chinese text) in School Details, save, reload | Confirm Chinese survives the browser form (the data layer verifiably preserves it; our automated harness couldn't send clean Chinese) |
-| 10 | Open the site on a phone | Physical responsiveness pass |
-| 11 | Trigger a password-reset email | Confirms SMTP (item 3) |
-| 12 | Re-open the fee/timetable report pages | Re-time with real data volume (slow only on our oversized demo dataset) |
-
-## Decisions already yours to make later (not blockers)
-- **Parent access:** parents have no web portal by GegoK12 design; the vendor's parent **mobile app** is not bundled in the open-source core — obtain from gegok12.com if wanted.
-- **Future features** (quoted separately if desired): prepaid lesson credits & deductions, renewal alerts, scheduling calendar, invoices/ledgers, automated WhatsApp, custom reports, theme colours, dedicated Chinese-address field, centre-wide WhatsApp button.
+## Future paid work (explicitly out of the $100 scope — quoted separately if desired)
+Prepaid lesson credits & deductions · renewal alerts · scheduling calendar · invoices/ledgers · automated WhatsApp · parent mobile app (vendor) · custom reports · theme colours · dedicated 中文 address field.
