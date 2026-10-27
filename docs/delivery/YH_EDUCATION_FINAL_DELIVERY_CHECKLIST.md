@@ -29,7 +29,7 @@ _Statuses verified against the running application on 2026-10-26. Statuses used:
 | HK-usable school-profile form | DONE | Validation relaxed (`DetailRequest`); HK + legacy data both validate | PASS (validation check ALL PASSED) | — |
 | Test-safety guard (DB wipe prevention) | DONE | `tests/TestCase.php` guard + `.env.testing` | PASS (guard skips; DB intact) | Never run full Feature suite on live DB |
 | Excluded features not implemented | CONFIRMED | Credits/deductions/alerts/calendar/invoices/ledgers/auto-WhatsApp/apps/reports/redesign | — | Future paid work if desired |
-| **Production deployment** | **PENDING-CLIENT** | Runbook ready (`YH_EDUCATION_DEPLOYMENT_GUIDE.md`) | not run | SSH access + domain + SMTP |
+| **Production deployment** | **DONE** | **Live at https://yheduhk.duckdns.org** (Oracle ARM64, deployed 2026-10-27 via `deploy/deploy-yhedu.sh`) | PASS — P-01…P-14 in `YH_EDUCATION_TEST_RESULTS.md` | Client UAT + revoke temp sudo |
 | Documentation pack | DONE | 6 delivery docs + full `docs/delivery/` set | — | — |
 | Release ZIP | DONE | `git archive` of the delivery branch (tracked files only — no `.env`, vendor, node_modules, caches, keys) | contents spot-checked | Hand to client |
 
