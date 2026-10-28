@@ -80,8 +80,14 @@ class AdminForm extends Component
 			'name' => $this->name,
 			'email' => $this->email,
 			'mobile_no' => $this->mobile,
-			'password' => Hash::make($this->password ?? ''),
 		];
+
+		// Security: never hash an empty password. On create the validation below
+		// requires one; on edit an untouched password field keeps the current hash
+		// (previously this overwrote it with Hash::make('') - a usable empty password).
+		if (!empty($this->password)) {
+			$data['password'] = Hash::make($this->password);
+		}
 		
 		//dd(\Request::segment ('5'));
 

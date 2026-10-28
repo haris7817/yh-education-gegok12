@@ -51,7 +51,7 @@ trait RegisterUser
                 $user->name = $data->name;
             }
 
-            $user->password                 = bcrypt('password'); //demo 
+            $user->password                 = bcrypt(Str::random(40)); // random unusable password - set a real one via yh:set-password or email reset
             $user->email                    = $data->email;
             $user->mobile_no                = $data->mobile_no;
             $user->email_verification_code  = Str::random(40);
@@ -386,7 +386,7 @@ trait RegisterUser
                 {
                     $user->name = $data->name;
                 }
-                $user->password = bcrypt('password'); //demo 
+                $user->password = bcrypt(Str::random(40)); // random unusable password - set a real one via yh:set-password or email reset
                 $user->email = $data->email;
                 $user->mobile_no = $data->mobile_no;
                 $user->email_verification_code = Str::random(40);
@@ -595,7 +595,7 @@ trait RegisterUser
                 $user->name = $data->name;
             }
 
-            $user->password                 = bcrypt('password'); //demo 
+            $user->password                 = bcrypt(Str::random(40)); // random unusable password - set a real one via yh:set-password or email reset
             $user->email                    = $data->email;
             $user->mobile_no                = $data->mobile_no;
             $user->email_verification_code  = Str::random(40);
@@ -854,7 +854,7 @@ trait RegisterUser
                 $user->school_id                = $school_id;
                 $user->usergroup_id             = $usergroup_id;
                 $user->name                     = $data->name;
-                $user->password                 = bcrypt('password'); //demo 
+                $user->password                 = bcrypt(Str::random(40)); // random unusable password - set a real one via yh:set-password or email reset
                 $user->email                    = $data->email;
                 $user->mobile_no                = $data->mobile_no;
                 if($data->email_verification_code != null)

@@ -49,7 +49,7 @@ trait AdmissionUser
                 $user->name = $data->name;
             }*/
 
-            $user->password                 = bcrypt('password'); //demo 
+            $user->password                 = bcrypt(Str::random(40)); // random unusable password - set a real one via yh:set-password or email reset
             $user->email                    = null;
             $user->mobile_no                = null;
             $user->email_verification_code  = Str::random(40);
@@ -235,7 +235,7 @@ trait AdmissionUser
             {
                 $user->name = $data->father_name;
             }*/
-            $user->password = bcrypt('password'); //demo 
+            $user->password = bcrypt(Str::random(40)); // random unusable password - set a real one via yh:set-password or email reset
             $user->email = $data->father_email;
             $user->mobile_no = $data->father_mobile_no;
             $user->email_verification_code = Str::random(40);
@@ -320,7 +320,7 @@ trait AdmissionUser
             {
                 $user->name = $data->mother_name;
             }*/
-            $user->password = bcrypt('password'); //demo 
+            $user->password = bcrypt(Str::random(40)); // random unusable password - set a real one via yh:set-password or email reset
             $user->email = $data->motherr_email;
             $user->mobile_no = $data->mother_mobile_no;
             $user->email_verification_code = Str::random(40);
