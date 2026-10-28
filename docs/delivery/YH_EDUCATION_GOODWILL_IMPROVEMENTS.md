@@ -79,7 +79,7 @@ Existing student/teacher/parent records (old fields readable; hidden, not droppe
 - **Multiple simultaneous class enrollments per student** — schema limit; not safe to shortcut.
 - **HKID field** — skipped deliberately (sensitive data, no stated requirement).
 - **Client's real spreadsheet** — import tested with a synthetic fixture; send one anonymised real sheet to confirm the column mapping before bulk import.
-- Known upstream behaviour (unchanged): students created through the admin UI receive the default password `password` (upstream code, commented "demo"). Fine while students don't log in; tell us if student logins will be used and we'll quote a proper credential flow.
+- ~~Known upstream behaviour: students created through the admin UI receive the default password `password`~~ — **FIXED 2026-10-28** (commit `8746267a`): all creation paths now assign cryptographically random passwords; accounts are activated with `php artisan yh:set-password <email|mobile>` or (once SMTP exists) the email reset flow. See admin guide §2b.
 - Scope exclusions remain: no credits/deductions, renewal alerts, calendars, paid Fee/Exam add-ons, invoices, mobile app builds, automated WhatsApp, redesigns.
 
 ## Disk usage

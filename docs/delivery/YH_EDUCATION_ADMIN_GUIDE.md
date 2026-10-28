@@ -30,6 +30,13 @@ _A plain-language guide for the YH Education team. Every feature described here 
 - **View / edit:** click a student to open their record; the profile shows the day school, grade, mother tongue, home phone and the guardian under the **Family** tab; use Edit to change anything, including the guardian contact.
 - **Parents:** you can still manage full parent records in the **Parents** section — guardian contacts created from the student form appear there too.
 
+## 2b. Account passwords & activation (security update 2026-10-28)
+- Newly created accounts (students, teachers, parents — typed in or Excel-imported) no longer get a predictable default password. Each account starts with a **random, unusable password** and must be *activated* before that person can log in.
+- **To activate an account** (give someone their first password), run on the server:
+  `php artisan yh:set-password their-email@example.com` (works with a mobile number too, e.g. for parents). It prints a strong one-time password **once** — pass it on securely and ask them to change it after first login (every role has a Change Password page). It is never written to any file or log.
+- Once you configure **SMTP** (§optional items), users can instead use **Forgot password** on the login page themselves — that becomes the preferred route.
+- Most tutorial-centre students never need to log in at all; only activate accounts for people who will actually use the system.
+
 ## 3. Managing teachers
 - **Teachers** menu → list of teachers; **Add Teacher** to create one with their login email.
 - The teacher form is simplified too (2026-10-28): **English Name**, **Chinese Name 中文姓名**, **Teacher ID**, phone (HK 8-digit fine), email, designation and joining date. Blood group, Aadhaar, marital status and "interested in" are no longer asked.
