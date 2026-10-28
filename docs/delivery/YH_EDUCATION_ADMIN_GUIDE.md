@@ -15,12 +15,25 @@ _A plain-language guide for the YH Education team. Every feature described here 
 
 ## 2. Managing students
 - **See all students:** Students menu → the student list (searchable, by class).
-- **Add one student:** Students → **Add Student** → fill in the details, **choose the class and section**, save. (Classes/sections must exist first — see §4.)
-- **View / edit:** click a student to open their record; use Edit to change details.
-- **Parents:** add or link a parent from the **Parents** section — if a parent already exists (matched by mobile number), link them instead of creating a duplicate. The Excel import (§6) creates student *and* parent together.
+- **Add one student:** Students → **Add Student**. The form is simplified for Hong Kong (updated 2026-10-28):
+  - **English Name** (required) and **Chinese Name 中文姓名** (optional) — both save and display correctly;
+  - **Date of Birth** shows the calculated **age** as you type; **Gender** Boy/Girl;
+  - **Student ID** (your own code, e.g. `YH2026001` — letters and numbers allowed);
+  - **Mother Tongue** dropdown (Cantonese / Mandarin / English / Other);
+  - **School Name** and **Grade** — the student's *day school* (you are a tutorial centre);
+  - **Address** is typed manually (Chinese or English, no Google Maps needed);
+  - **Home Phone / Student Mobile / Email** — all optional; HK 8-digit numbers accepted;
+  - **Photo is optional** — a neutral default is used based on gender;
+  - **Guardian / Emergency Contact** — name, relationship and phone right on the form. If the phone matches an existing parent, the student is **linked** to that parent (no duplicates); otherwise a parent record is created automatically.
+  - Choose the **class** and roll number, set the **Enrollment Date**, save. (Classes must exist first — see §4.)
+- Indian-specific fields (blood group, caste, Aadhaar, siblings, EMIS, transport) are no longer on the form; old data is preserved in the database.
+- **View / edit:** click a student to open their record; the profile shows the day school, grade, mother tongue, home phone and the guardian under the **Family** tab; use Edit to change anything, including the guardian contact.
+- **Parents:** you can still manage full parent records in the **Parents** section — guardian contacts created from the student form appear there too.
 
 ## 3. Managing teachers
 - **Teachers** menu → list of teachers; **Add Teacher** to create one with their login email.
+- The teacher form is simplified too (2026-10-28): **English Name**, **Chinese Name 中文姓名**, **Teacher ID**, phone (HK 8-digit fine), email, designation and joining date. Blood group, Aadhaar, marital status and "interested in" are no longer asked.
+- A teacher's profile shows their **assigned classes** (from the class-teacher and subject assignments you make under classes/subjects).
 - Teachers then sign in themselves and see their own dashboard, classes and attendance tools.
 
 ## 4. Classes and sections
@@ -37,7 +50,10 @@ Before adding or importing students, create your **classes/sections** (e.g. Clas
    - `class` and `section` must match classes you created in §4 (e.g. class `1`, section `A`) — rows that don't match are **skipped and reported**, nothing half-saved;
    - `parent_mobile_no` identifies the parent — siblings with the same number are linked to **one** parent (no duplicates);
    - `parent_qualification`: ideally one exact qualification name from the system; if blank or unrecognised the parent is still created, just without a qualification;
-   - dates like `date_of_birth` in a normal date format.
+   - dates like `date_of_birth` in a normal date format;
+   - **new optional columns** (2026-10-28): `school_name` (day school), `grade`, `home_phone` — leave blank if unknown;
+   - Chinese text (names, addresses) imports correctly;
+   - `country`/`state`/`city` may be left blank — they default to Hong Kong.
 3. Upload. The app tells you how many rows were imported and which were skipped. Check the new students appear under the right classes.
 4. 🔒 Import real student data only after the format and backup arrangements are agreed.
 

@@ -97,17 +97,30 @@ trait RegisterUser
             {
                 $userprofile->mother_tongue = $data->mother_tongue;
             }
+            // HK localization (YH Education): day school, grade and home phone.
+            if(!is_null($data->school_name))
+            {
+                $userprofile->school_name = $data->school_name;
+            }
+            if(!is_null($data->grade))
+            {
+                $userprofile->grade = $data->grade;
+            }
+            if(!is_null($data->alternate_no))
+            {
+                $userprofile->alternate_no = $data->alternate_no;
+            }
             if(!is_null($data->caste))
             {
                 $userprofile->caste = $data->caste;
             }
 
             $userprofile->sub_caste=$data->sub_caste;
-            
+
             $userprofile->aadhar_number         = $data->aadhar_number;
 
             $userprofile->joining_date          = date('Y-m-d',strtotime($data->joining_date));
-            
+
            /* $userprofile->registration_number   = $data->registration_number;*/
             
             
@@ -247,6 +260,10 @@ trait RegisterUser
             {
                 $userprofile->mother_tongue = $data->mother_tongue;
             }
+            // HK localization (YH Education): day school, grade and home phone.
+            $userprofile->school_name  = $data->school_name;
+            $userprofile->grade        = $data->grade;
+            $userprofile->alternate_no = $data->alternate_no;
             if(!is_null($data->caste))
             {
                 $userprofile->caste = $data->caste;

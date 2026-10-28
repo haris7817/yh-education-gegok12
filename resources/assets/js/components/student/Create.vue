@@ -1,88 +1,61 @@
 <template>
   <div class="bg-white shadow px-4 py-3">
     <div v-if="this.success!=null" class="alert alert-success" id="success-alert">{{this.success}}</div>
-    <h1>Personal Details</h1>
+
+    <h1>Student Information</h1>
+
     <div class="flex flex-col lg:flex-row">
       <div class="tw-form-group w-full lg:w-1/3">
         <div class="lg:mr-8 md:mr-8">
           <div class="mb-2">
-            <label for="firstname" class="tw-form-label">First Name<span class="text-red-500">*</span></label>
+            <label for="firstname" class="tw-form-label">English Name<span class="text-red-500">*</span></label>
           </div>
           <div class="mb-2">
-           
-            <input type="text" class="tw-form-control w-full" id="firstname" v-model="firstname" name="firstname" Placeholder="First Name">
+            <input type="text" class="tw-form-control w-full" id="firstname" v-model="firstname" name="firstname" placeholder="e.g. Chan Siu Ming">
           </div>
           <span v-if="errors.firstname" class="text-red-500 text-xs font-semibold">{{errors.firstname[0]}}</span>
-        </div> 
-      </div>
-
-       <div class="tw-form-group w-full lg:w-1/3">
-        <div class="lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="lastname" class="tw-form-label">Last Name </label>
-          </div>
-          <div class="mb-2">
-            
-            <input type="text" v-model="lastname" name="lastname" id="lastname" class="tw-form-control w-full" Placeholder="Last Name">
-          </div>
-          <span v-if="errors.lastname" class="text-red-500 text-xs font-semibold">{{errors.lastname[0]}}</span>
-        </div> 
+        </div>
       </div>
 
       <div class="tw-form-group w-full lg:w-1/3">
         <div class="lg:mr-8 md:mr-8">
           <div class="mb-2">
-            <label for="date_of_birth" class="tw-form-label">Date Of Birth<span class="text-red-500">*</span></label>
+            <label for="lastname" class="tw-form-label">Chinese Name 中文姓名</label>
+          </div>
+          <div class="mb-2">
+            <input type="text" v-model="lastname" name="lastname" id="lastname" class="tw-form-control w-full" placeholder="例如 陳小明">
+          </div>
+          <span v-if="errors.lastname" class="text-red-500 text-xs font-semibold">{{errors.lastname[0]}}</span>
+        </div>
+      </div>
+
+      <div class="tw-form-group w-full lg:w-1/3">
+        <div class="lg:mr-8 md:mr-8">
+          <div class="mb-2">
+            <label for="date_of_birth" class="tw-form-label">Date Of Birth<span class="text-red-500">*</span>
+              <span v-if="computedAge !== null" class="text-gray-500 text-xs"> (Age: {{ computedAge }})</span>
+            </label>
           </div>
           <div class="mb-2">
             <input type="date" v-model="date_of_birth" name="date_of_birth" id="date_of_birth" class="tw-form-control w-full">
           </div>
           <span v-if="errors.date_of_birth" class="text-red-500 text-xs font-semibold">{{errors.date_of_birth[0]}}</span>
-        </div> 
-      </div>
-    </div>
-
-    <div class="flex flex-col lg:flex-row">
-      <div class="tw-form-group w-full lg:w-1/2">
-        <div class="lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="mobile_no" class="tw-form-label">Mobile Number</label>
-          </div>
-          <div class="mb-2">
-          
-            <input type="text" v-model="mobile_no" name="mobile_no" id="mobile_no" class="tw-form-control w-full" placeholder="Mobile Number"> 
-          </div>
-          <span v-if="errors.mobile_no" class="text-red-500 text-xs font-semibold">{{errors.mobile_no[0]}}</span>
-        </div>
-      </div>
-
-      <div class="tw-form-group w-full lg:w-1/2">
-        <div class="lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="email" class="tw-form-label">Email ID</label>
-          </div>
-          <div class="mb-2">
-          
-            <input type="text" v-model="email" name="email" id="email" class="tw-form-control w-full" placeholder="Email ID">  
-          </div>
-          <span v-if="errors.email" class="text-red-500 text-xs font-semibold">{{errors.email[0]}}</span>
         </div>
       </div>
     </div>
 
     <div class="flex flex-col lg:flex-row">
-      <div class="tw-form-group w-full lg:w-1/5">
+      <div class="tw-form-group w-full lg:w-1/3">
         <div class="lg:mr-8 md:mr-8">
           <div class="mb-2">
             <label for="gender" class="tw-form-label">Gender<span class="text-red-500">*</span></label>
           </div>
           <div class="flex tw-form-control">
-
-            <div class="w-1/2 flex items-center mr-2 lg:mr-8 md:mr-8"> 
+            <div class="w-1/2 flex items-center mr-2 lg:mr-8 md:mr-8">
               <input type="radio" v-model="gender" name="gender" id="gender1" value="male">
               <span class="text-sm mx-1">Boy</span>
             </div>
-            <div class="w-1/2 flex items-center "> 
+            <div class="w-1/2 flex items-center ">
               <input type="radio" v-model="gender" name="gender" id="gender2" value="female">
               <span class="text-sm mx-1">Girl</span>
             </div>
@@ -91,376 +64,157 @@
         </div>
       </div>
 
-      <div class="tw-form-group w-full lg:w-2/5">
+      <div class="tw-form-group w-full lg:w-1/3">
         <div class="lg:mr-8 md:mr-8">
           <div class="mb-2">
-            <label for="blood_group" class="tw-form-label">Blood Group<span class="text-red-500">*</span></label>
+            <label for="registration_number" class="tw-form-label">Student ID<span class="text-red-500">*</span></label>
           </div>
           <div class="mb-2">
-            <select class="tw-form-control w-full" id="blood_group" v-model="blood_group" name="blood_group">
-              <option value="" disabled>Select Blood Group</option>
-              <option 
-                  v-for="blood_group in blood_groups"
-                  :key="blood_group.num"
-                  :value="blood_group.num">
-                  {{ blood_group.name }}
-                </option>
-            </select>
+            <input type="text" v-model="registration_number" name="registration_number" id="registration_number" class="tw-form-control w-full" placeholder="e.g. YH2026001">
           </div>
-          <span v-if="errors.blood_group" class="text-red-500 text-xs font-semibold">{{errors.blood_group[0]}}</span>
-        </div> 
+          <span v-if="errors.registration_number" class="text-red-500 text-xs font-semibold">{{errors.registration_number[0]}}</span>
+        </div>
       </div>
-      
-      <div class="tw-form-group w-full lg:w-2/5">
+
+      <div class="tw-form-group w-full lg:w-1/3">
         <div class="lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="aadhar_number" class="tw-form-label">Aadhaar Number</label>
-          </div>
-          <div class="mb-2">
-            <input type="text" class="tw-form-control w-full" id="aadhar_number" v-model="aadhar_number" name="aadhar_number" Placeholder="Aadhar Number">
-          </div>
-          <span v-if="errors.aadhar_number" class="text-red-500 text-xs font-semibold">{{errors.aadhar_number[0]}}</span>
-        </div> 
-      </div>
-    </div>
-
-     <GoogleMap
-  v-model:address="address"
-  v-model:latitude="latitude"
-  v-model:longitude="longitude"
-/>
-
-    <div class="tw-form-group">
-      <div class="flex flex-col lg:flex-row">
-        <div class="w-full lg:w-1/4 lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="country" class="tw-form-label">Country<span class="text-red-500">*</span></label>
-          </div>
-          <div class="mb-2">
-            <select class="tw-form-control w-full" id="country_id" v-model="country_id" name="country_id">
-              <option value="" disabled>Select Country</option>
-              <option v-for="country in countrylist" v-bind:value="country.id">{{country.name}}</option>
-            </select>
-          </div>
-          <span v-if="errors.country_id" class="text-red-500 text-xs font-semibold">{{errors.country_id[0]}}</span>
-        </div>
-
-         <div class="w-full lg:w-1/4 lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="state" class="tw-form-label">State<span class="text-red-500">*</span></label>
-          </div>
-          <div class="mb-2">
-            <select class="tw-form-control w-full" id="state_id" v-model="state_id" name="state_id">
-              <option value="" disabled>Select State</option>
-              <option v-for="state in statelist[this.country_id]" v-bind:value="state.id">{{state.name}}</option>
-            </select>  
-          </div>
-          <span v-if="errors.state_id" class="text-red-500 text-xs font-semibold">{{errors.state_id[0]}}</span>
-        </div>
-
-        <div class="w-full lg:w-1/4 lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="city" class="tw-form-label">City<span class="text-red-500">*</span></label>
-          </div>
-          <div class="mb-2">
-            <select class="tw-form-control w-full" id="city_id" v-model="city_id" name="city_id">
-              <option value="" disabled>Select City</option>
-              <option v-for="city in citylist [this.state_id]" v-bind:value="city.id">{{city.name}}</option>
-            </select>   
-          </div>
-          <span v-if="errors.city_id" class="text-red-500 text-xs font-semibold">{{errors.city_id[0]}}</span>
-        </div>
-
-        <div class="w-full lg:w-1/4 lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="pincode" class="tw-form-label">Pincode</label>
-          </div>
-          <div class="mb-2">
-            <input type="text" class="tw-form-control w-full" v-model="pincode" name="pincode" id="pincode"  placeholder="Enter Pincode">
-          </div>
-          <span v-if="errors.pincode" class="text-red-500 text-xs font-semibold">{{errors.pincode[0]}}</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="tw-form-group">
-      <div class="flex flex-col lg:flex-row">
-        <div class="w-full lg:w-1/4 lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="birth_place" class="tw-form-label">Birth Place</label>
-          </div>
-          <div class="mb-2">
-            <input type="text" class="tw-form-control w-full" id="birth_place" v-model="birth_place" name="birth_place" placeholder="Birth Place">
-          </div>
-          <span v-if="errors.birth_place" class="text-red-500 text-xs font-semibold">{{errors.birth_place[0]}}</span>
-        </div>
-
-         <div class="w-full lg:w-1/4 lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="native_place" class="tw-form-label">Native Place</label>
-          </div>
-          <div class="mb-2">
-            <input type="text" class="tw-form-control w-full" id="native_place" v-model="native_place" name="native_place" placeholder="Native Place">
-          </div>
-          <span v-if="errors.native_place" class="text-red-500 text-xs font-semibold">{{errors.native_place[0]}}</span>
-        </div>
-
-        <div class="w-full lg:w-1/4 lg:mr-8 md:mr-8">
           <div class="mb-2">
             <label for="mother_tongue" class="tw-form-label">Mother Tongue<span class="text-red-500">*</span></label>
           </div>
           <div class="mb-2">
-            <input type="text" class="tw-form-control w-full" id="mother_tongue" v-model="mother_tongue" name="mother_tongue" placeholder="Mother Tongue">
+            <select class="tw-form-control w-full" id="mother_tongue" v-model="mother_tongue" name="mother_tongue">
+              <option value="" disabled>Select Mother Tongue</option>
+              <option value="Cantonese">Cantonese 廣東話</option>
+              <option value="Mandarin">Mandarin 普通話</option>
+              <option value="English">English</option>
+              <option value="Other">Other</option>
+            </select>
           </div>
           <span v-if="errors.mother_tongue" class="text-red-500 text-xs font-semibold">{{errors.mother_tongue[0]}}</span>
         </div>
-
-        <div class="w-full lg:w-1/4 lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="caste" class="tw-form-label">Caste<span class="text-red-500">*</span></label>
-          </div>
-          <div class="mb-2">
-            <select class="tw-form-control w-full" v-model="caste" name="caste" id="caste">
-              <option value="" disabled>Select Caste</option>
-              <option v-for="castes in castelist" v-bind:value="castes.id">{{ castes.name }}</option>
-            </select>
-          </div>
-          <span v-if="errors.caste" class="text-red-500 text-xs font-semibold">{{errors.caste[0]}}</span>
-        </div>
-
-        <div class="w-full lg:w-1/4 lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="sub_caste" class="tw-form-label">Sub Caste<span class="text-red-500"></span></label>
-          </div>
-          <div class="mb-2">
-             <input type="text" class="tw-form-control w-full" id="sub_caste" v-model="sub_caste" name="sub_caste" placeholder="Sub Caste">
-          </div>
-          <span v-if="errors.sub_caste" class="text-red-500 text-xs font-semibold">{{errors.sub_caste[0]}}</span>
-        </div>
-
-      </div>
-    </div>
-    
-    <div class="flex flex-col lg:flex-row">
-      <div class="tw-form-group w-full lg:w-1/3">
-        <div class="lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="mode_of_transport" class="tw-form-label">Mode Of Transport</label>
-          </div>
-          <div class="mb-2">
-            <select class="tw-form-control w-full" id="mode_of_transport" v-model="mode_of_transport" name="mode_of_transport">
-              <option value="" disabled>Select Transport</option>
-              <option
-                v-for="transport in transportlist"
-                :key="transport.id"
-                :value="transport.id">
-                {{ transport.name }}
-              </option>
-            </select>
-          </div>
-          <span v-if="errors.mode_of_transport" class="text-red-500 text-xs font-semibold">{{errors.mode_of_transport[0]}}</span>
-        </div> 
-      </div>
-      
-      <div class="tw-form-group w-full lg:w-1/2" v-if="checkInArray(this.lists,this.mode_of_transport)">
-        <div class="flex flex-col lg:flex-row">
-          <div class="w-full lg:w-1/2">
-            <div class="lg:mr-8 md:mr-8">
-              <div class="mb-2">
-                <label for="driver_name" class="tw-form-label">Driver Name<span class="text-red-500">*</span></label>
-              </div>
-              <div class="mb-2">
-                <input type="text" v-model="driver_name" name="driver_name" id="driver_name" class="tw-form-control w-full" placeholder="Driver Name">
-              </div>
-              <span v-if="errors.driver_name" class="text-red-500 text-xs font-semibold">{{errors.driver_name[0]}}</span>
-            </div> 
-          </div>
-
-          <div class="w-full lg:w-1/2">
-            <div class="lg:mr-8 md:mr-8">
-              <div class="mb-2">
-                <label for="driver_contact_number" class="tw-form-label">Driver Contact Number<span class="text-red-500">*</span></label>
-              </div>
-              <div class="mb-2">
-                <input type="text" v-model="driver_contact_number" name="driver_contact_number" id="driver_contact_number" class="tw-form-control w-full" placeholder="Driver Contact Number">
-              </div>
-              <span v-if="errors.driver_contact_number" class="text-red-500 text-xs font-semibold">{{errors.driver_contact_number[0]}}</span>
-            </div> 
-          </div>  
-        </div>
       </div>
     </div>
 
     <div class="flex flex-col lg:flex-row">
-      <div class="tw-form-group w-full lg:w-1/6">
-        <div class="lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="siblings" class="tw-form-label">Siblings<span class="text-red-500">*</span></label>
-          </div>
-          <div class="mb-2">
-            <select class="tw-form-control w-full" id="siblings" v-model="siblings" name="siblings">
-              <option value="" disabled>Select Sibling</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-            </select>
-          </div>
-          <span v-if="errors.siblings" class="text-red-500 text-xs font-semibold">{{errors.siblings[0]}}</span>
-        </div> 
-      </div>
-
-      <div class="tw-form-group w-full lg:w-1/6" v-if="this.siblings == 'yes'">
-        <div class="lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="siblings" class="tw-form-label">Siblings Count<span class="text-red-500">*</span></label>
-          </div>
-          <div class="mb-2">
-            <input type="text" class="tw-form-control w-full" id="siblings_count" v-model="siblings_count" name="siblings_count" placeholder="Siblings Count">
-          </div>
-          <span v-if="errors.siblings_count" class="text-red-500 text-xs font-semibold">{{errors.siblings_count[0]}}</span>
-        </div> 
-      </div>
-      
-      <div class="tw-form-group w-full lg:w-4/6" v-if="this.siblings == 'yes'">
-        <div class="flex flex-col lg:flex-row" v-for="(input,index) in inputs">
-          <div class="w-full lg:w-1/4">
-            <div class="lg:mr-8 md:mr-8">
-              <div class="mb-2">
-                <label for="sibling_relation" class="tw-form-label">Sibling Relation<span class="text-red-500">*</span></label>
-              </div>
-              <div class="mb-2">
-                <select v-model="input.sibling_relation" name="sibling_relation[]" id="sibling_relation" class="tw-form-control w-full">
-                  <option value="" disabled>Select Relation</option>
-                  <option v-for="sibling in siblinglist" v-bind:value="sibling.id">{{ sibling.name }}</option>
-                </select>
-              </div>
-              <span v-if="errors['sibling_relation'+index]" class="text-red-500 text-xs font-semibold">{{errors['sibling_relation'+index]}}</span>
-            </div> 
-          </div>
-
-          <div class="w-full lg:w-1/4">
-            <div class="lg:mr-8 md:mr-8">
-              <div class="mb-2">
-                <label for="sibling_name" class="tw-form-label">Sibling Name<span class="text-red-500">*</span></label>
-              </div>
-              <div class="mb-2">
-                <input type="text" v-model="input.sibling_name" name="sibling_name[]" id="sibling_name" class="tw-form-control w-full" placeholder="Sibling Name">
-              </div>
-              <span v-if="errors['sibling_name'+index]" class="text-red-500 text-xs font-semibold">{{errors['sibling_name'+index]}}</span>
-            </div> 
-          </div>
-
-          <div class="w-full lg:w-1/4">
-            <div class="lg:mr-8 md:mr-8">
-              <div class="mb-2">
-                <label for="sibling_date_of_birth" class="tw-form-label">Sibling Date Of Birth<span class="text-red-500">*</span></label>
-              </div>
-              <div class="mb-2">
-                <input type="date" v-model="input.sibling_date_of_birth" name="sibling_date_of_birth[]" id="sibling_date_of_birth" class="tw-form-control w-full">
-              </div>
-              <span v-if="errors['sibling_date_of_birth'+index]" class="text-red-500 text-xs font-semibold">{{errors['sibling_date_of_birth'+index]}}</span>
-            </div> 
-          </div>
-
-          <div class="w-full lg:w-1/4">
-            <div class="lg:mr-8 md:mr-8">
-              <div class="mb-2">
-                <label for="sibling_standard" class="tw-form-label">Sibling Class</label>
-              </div>
-              <div class="mb-2">
-                <select class="tw-form-control w-full" id="sibling_standard" v-model="input.sibling_standard" name="sibling_standard[]">
-                  <option value="" disabled>Select Class</option>
-                  <option value="" v-for="standardLink in standardLinklist" v-bind:value="standardLink.id">{{ standardLink.standard_section }}</option>
-                </select>
-              </div>
-              <span v-if="errors['sibling_standard'+index]" class="text-red-500 text-xs font-semibold">{{errors['sibling_standard'+index]}}</span>
-            </div> 
-          </div> 
-          <a href="#" class="py-8" @click="deleteRow(index)">
-            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" xml:space="preserve" class="w-4 h-4 fill-current text-black-600"><g><g><g><polygon points="353.574,176.526 313.496,175.056 304.807,412.34 344.885,413.804"></polygon><rect x="235.948" y="175.791" width="40.104" height="237.285"></rect><polygon points="207.186,412.334 198.497,175.049 158.419,176.52 167.109,413.804"></polygon> <path d="M17.379,76.867v40.104h41.789L92.32,493.706C93.229,504.059,101.899,512,112.292,512h286.74 c10.394,0,19.07-7.947,19.972-18.301l33.153-376.728h42.464V76.867H17.379z M380.665,471.896H130.654L99.426,116.971h312.474 L380.665,471.896z"></path></g></g></g> <g><g><path d="M321.504,0H190.496c-18.428,0-33.42,14.992-33.42,33.42v63.499h40.104V40.104h117.64v56.815h40.104V33.42 C354.924,14.992,339.932,0,321.504,0z"></path></g></g></svg>
-          </a> 
-        </div>
-        
-        <div class="w-full lg:w-1/4">
-          <div class="lg:mr-8 md:mr-8">
-            <div class="mb-2">
-              <label for="add_siblings" class="tw-form-label">Add Sibling</label>
-            </div>
-            <div class="mb-2">
-              <a href="#" class="tw-form-control w-full" @click="addRow">+ </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div v-if="this.inputs != null">
-      <input type="hidden" name="count" v-bind:value="this.inputs.length">
-    </div>
-
-    <div class="flex flex-col lg:flex-row">
-      <div class="tw-form-group w-full lg:w-1/3">
-        <div class="lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="avatar" class="tw-form-label">Avatar<span class="text-red-500">*</span></label>
-          </div>
-          <div class="mb-2">
-            <input type="file" name="avatar" @change="OnFileSelected" id="avatar" class="tw-form-control w-full">
-          </div>
-          <span v-if="errors.avatar" class="text-red-500 text-xs font-semibold">{{errors.avatar[0]}}</span>
-        </div>
-      </div>
-      
       <div class="tw-form-group w-full lg:w-1/2">
         <div class="lg:mr-8 md:mr-8">
           <div class="mb-2">
-            <label for="notes" class="tw-form-label">Notes</label>
+            <label for="school_name" class="tw-form-label">School Name (day school)</label>
           </div>
           <div class="mb-2">
-            <textarea type="text" class="tw-form-control w-full" v-model="notes" id="notes" name="notes" rows="3"></textarea>
+            <input type="text" class="tw-form-control w-full" id="school_name" v-model="school_name" name="school_name" placeholder="e.g. TKO Primary School">
           </div>
-          <span v-if="errors.notes" class="text-red-500 text-xs font-semibold">{{errors.notes[0]}}</span>
-        </div> 
+          <span v-if="errors.school_name" class="text-red-500 text-xs font-semibold">{{errors.school_name[0]}}</span>
+        </div>
+      </div>
+
+      <div class="tw-form-group w-full lg:w-1/2">
+        <div class="lg:mr-8 md:mr-8">
+          <div class="mb-2">
+            <label for="grade" class="tw-form-label">Grade (at day school)</label>
+          </div>
+          <div class="mb-2">
+            <input type="text" class="tw-form-control w-full" id="grade" v-model="grade" name="grade" placeholder="e.g. P4 / S2">
+          </div>
+          <span v-if="errors.grade" class="text-red-500 text-xs font-semibold">{{errors.grade[0]}}</span>
+        </div>
       </div>
     </div>
-    <hr style="border-width: 1px;">
-    <h1>Academic Details</h1>
+
+    <GoogleMap
+      v-model:address="address"
+      v-model:latitude="latitude"
+      v-model:longitude="longitude"
+    />
+    <span v-if="errors.address" class="text-red-500 text-xs font-semibold">{{errors.address[0]}}</span>
+
     <div class="flex flex-col lg:flex-row">
       <div class="tw-form-group w-full lg:w-1/3">
         <div class="lg:mr-8 md:mr-8">
           <div class="mb-2">
-            <label for="registration_number" class="tw-form-label">Admission Number<span class="text-red-500">*</span></label>
+            <label for="alternate_no" class="tw-form-label">Home Phone</label>
           </div>
           <div class="mb-2">
-            <input type="text" v-model="registration_number" name="registration_number" id="registration_number" class="tw-form-control w-full" placeholder="Admission Number">
+            <input type="text" v-model="alternate_no" name="alternate_no" id="alternate_no" class="tw-form-control w-full" placeholder="Home Phone (optional)">
           </div>
-          <span v-if="errors.registration_number" class="text-red-500 text-xs font-semibold">{{errors.registration_number[0]}}</span>
-        </div> 
-      </div>
-      
-      <div class="tw-form-group w-full lg:w-1/3">
-        <div class="lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="EMIS_number" class="tw-form-label">EMIS Number</label>
-          </div>
-          <div class="mb-2">
-            <input type="text" v-model="EMIS_number" name="EMIS_number" id="EMIS_number" class="tw-form-control w-full" placeholder="EMIS Number">
-          </div>
-          <span v-if="errors.EMIS_number" class="text-red-500 text-xs font-semibold">{{errors.EMIS_number[0]}}</span>
-        </div> 
+          <span v-if="errors.alternate_no" class="text-red-500 text-xs font-semibold">{{errors.alternate_no[0]}}</span>
+        </div>
       </div>
 
       <div class="tw-form-group w-full lg:w-1/3">
         <div class="lg:mr-8 md:mr-8">
           <div class="mb-2">
-            <label for="joining_date" class="tw-form-label">Joining Date<span class="text-red-500">*</span></label>
+            <label for="mobile_no" class="tw-form-label">Student Mobile</label>
           </div>
           <div class="mb-2">
-            <input type="date" name="joining_date" v-model="joining_date" id="joining_date" class="tw-form-control w-full">
+            <input type="text" v-model="mobile_no" name="mobile_no" id="mobile_no" class="tw-form-control w-full" placeholder="Mobile Number (optional)">
           </div>
-          <span v-if="errors.joining_date" class="text-red-500 text-xs font-semibold">{{errors.joining_date[0]}}</span>
-        </div> 
-      </div>      
+          <span v-if="errors.mobile_no" class="text-red-500 text-xs font-semibold">{{errors.mobile_no[0]}}</span>
+        </div>
+      </div>
+
+      <div class="tw-form-group w-full lg:w-1/3">
+        <div class="lg:mr-8 md:mr-8">
+          <div class="mb-2">
+            <label for="email" class="tw-form-label">Email Address</label>
+          </div>
+          <div class="mb-2">
+            <input type="text" v-model="email" name="email" id="email" class="tw-form-control w-full" placeholder="Email (optional)">
+          </div>
+          <span v-if="errors.email" class="text-red-500 text-xs font-semibold">{{errors.email[0]}}</span>
+        </div>
+      </div>
     </div>
+
+    <hr style="border-width: 1px;">
+    <h1>Guardian / Emergency Contact <span class="text-gray-500 text-sm">(optional)</span></h1>
+
+    <div class="flex flex-col lg:flex-row">
+      <div class="tw-form-group w-full lg:w-1/3">
+        <div class="lg:mr-8 md:mr-8">
+          <div class="mb-2">
+            <label for="guardian_name" class="tw-form-label">Contact Name</label>
+          </div>
+          <div class="mb-2">
+            <input type="text" v-model="guardian_name" name="guardian_name" id="guardian_name" class="tw-form-control w-full" placeholder="Guardian name (中/EN)">
+          </div>
+          <span v-if="errors.guardian_name" class="text-red-500 text-xs font-semibold">{{errors.guardian_name[0]}}</span>
+        </div>
+      </div>
+
+      <div class="tw-form-group w-full lg:w-1/3">
+        <div class="lg:mr-8 md:mr-8">
+          <div class="mb-2">
+            <label for="guardian_relation" class="tw-form-label">Relationship</label>
+          </div>
+          <div class="mb-2">
+            <select class="tw-form-control w-full" id="guardian_relation" v-model="guardian_relation" name="guardian_relation">
+              <option value="" disabled>Select Relationship</option>
+              <option value="father">Father</option>
+              <option value="mother">Mother</option>
+              <option value="guardian">Guardian</option>
+            </select>
+          </div>
+          <span v-if="errors.guardian_relation" class="text-red-500 text-xs font-semibold">{{errors.guardian_relation[0]}}</span>
+        </div>
+      </div>
+
+      <div class="tw-form-group w-full lg:w-1/3">
+        <div class="lg:mr-8 md:mr-8">
+          <div class="mb-2">
+            <label for="guardian_mobile" class="tw-form-label">Contact Phone</label>
+          </div>
+          <div class="mb-2">
+            <input type="text" v-model="guardian_mobile" name="guardian_mobile" id="guardian_mobile" class="tw-form-control w-full" placeholder="e.g. 91234567">
+          </div>
+          <span v-if="errors.guardian_mobile" class="text-red-500 text-xs font-semibold">{{errors.guardian_mobile[0]}}</span>
+        </div>
+      </div>
+    </div>
+    <p class="text-xs text-gray-500">If the phone number matches an existing parent account, the student is linked to it instead of creating a duplicate.</p>
+
+    <hr style="border-width: 1px;">
+    <h1>Enrollment</h1>
 
     <div class="flex flex-col lg:flex-row">
       <div class="tw-form-group w-full lg:w-1/3">
@@ -480,7 +234,7 @@
             </select>
           </div>
           <span v-if="errors.standard" class="text-red-500 text-xs font-semibold">{{errors.standard[0]}}</span>
-        </div> 
+        </div>
       </div>
 
       <div class="tw-form-group w-full lg:w-1/3">
@@ -492,33 +246,54 @@
             <input type="text" v-model="roll_number" name="roll_number" id="roll_number" class="tw-form-control w-full" placeholder="Roll Number">
           </div>
           <span v-if="errors.roll_number" class="text-red-500 text-xs font-semibold">{{errors.roll_number[0]}}</span>
-        </div> 
-      </div>
-      
-      <div class="tw-form-group w-full lg:w-1/3">
-        <div class="lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="id_card_number" class="tw-form-label">ID Card Number</label>
-          </div>
-          <div class="mb-2">
-            <input type="text" v-model="id_card_number" name="id_card_number" id="id_card_number" class="tw-form-control w-full" placeholder="ID Card Number">
-          </div>
-          <span v-if="errors.id_card_number" class="text-red-500 text-xs font-semibold">{{errors.id_card_number[0]}}</span>
-        </div> 
+        </div>
       </div>
 
       <div class="tw-form-group w-full lg:w-1/3">
         <div class="lg:mr-8 md:mr-8">
           <div class="mb-2">
-            <label for="board_registration_number" class="tw-form-label whitespace-no-wrap">Board Registration Number<span class="text-red-500 whitespace-no-wrap">*Only For Class X , XI , XII</span></label>
+            <label for="joining_date" class="tw-form-label">Enrollment Date<span class="text-red-500">*</span></label>
           </div>
           <div class="mb-2">
-            <input type="text" v-model="board_registration_number" name="board_registration_number" id="board_registration_number" class="tw-form-control w-full" placeholder="Board Registration Number">
+            <input type="date" name="joining_date" v-model="joining_date" id="joining_date" class="tw-form-control w-full">
           </div>
-          <span v-if="errors.board_registration_number" class="text-red-500 text-xs font-semibold">{{errors.board_registration_number[0]}}</span>
-        </div> 
-      </div>   
-    </div>   
+          <span v-if="errors.joining_date" class="text-red-500 text-xs font-semibold">{{errors.joining_date[0]}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row">
+      <div class="tw-form-group w-full lg:w-1/3">
+        <div class="lg:mr-8 md:mr-8">
+          <div class="mb-2">
+            <label for="avatar" class="tw-form-label">Photo <span class="text-gray-500 text-xs">(optional — a default is used if empty)</span></label>
+          </div>
+          <div class="mb-2">
+            <input type="file" name="avatar" @change="OnFileSelected" id="avatar" class="tw-form-control w-full">
+          </div>
+          <span v-if="errors.avatar" class="text-red-500 text-xs font-semibold">{{errors.avatar[0]}}</span>
+        </div>
+      </div>
+
+      <div class="tw-form-group w-full lg:w-2/3">
+        <div class="lg:mr-8 md:mr-8">
+          <div class="mb-2">
+            <label for="notes" class="tw-form-label">Notes</label>
+          </div>
+          <div class="mb-2">
+            <textarea type="text" class="tw-form-control w-full" v-model="notes" id="notes" name="notes" rows="3"></textarea>
+          </div>
+          <span v-if="errors.notes" class="text-red-500 text-xs font-semibold">{{errors.notes[0]}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden defaults: Hong Kong location rows + legacy fields kept for compatibility -->
+    <input type="hidden" name="country_id" :value="country_id">
+    <input type="hidden" name="state_id" :value="state_id">
+    <input type="hidden" name="city_id" :value="city_id">
+    <input type="hidden" name="siblings" value="no">
+
     <Teleport to="#submit-btn">
       <div class="my-6">
         <a href="#" dusk="submit-btn" class="btn btn-primary submit-btn" @click="submitForm()">Submit</a>
@@ -529,7 +304,7 @@
   </div>
 </template>
 
-<script> 
+<script>
   import GoogleMap from '../GoogleMap.vue'
 export default {
   props:['url'],
@@ -547,62 +322,54 @@ export default {
       email:'',
       gender:'',
       date_of_birth:'',
-      blood_group:'',
       standard:'',
       city_id:'',
       state_id:'',
-      country_id:7,
-      pincode:'',
-      birth_place:'',
-      native_place:'',
+      country_id:'',
       mother_tongue:'',
-      caste:'',
-      sub_caste:'',
-      aadhar_number:'',
       joining_date:'',
       registration_number:'',
-      EMIS_number:'',
       roll_number:'',
-      id_card_number:'',
-      board_registration_number:'',
-      mode_of_transport:'',
-      driver_name:'',
-      driver_contact_number:'',
-      siblings:'',
-      siblings_count:'',
-      sibling_relation:'',
-      sibling_name:'',
-      sibling_date_of_birth:'',
-      sibling_standard:'',
+      school_name:'',
+      grade:'',
+      alternate_no:'',
+      guardian_name:'',
+      guardian_relation:'',
+      guardian_mobile:'',
       notes:'',
       avatar:'',
+      address:'',
+      latitude:'',
+      longitude:'',
       countrylist:[],
       statelist:[],
       citylist:[],
       standardLinklist:[],
-      inputs:[{
-        sibling_relation:'',
-        sibling_name:'',
-        sibling_date_of_birth:'',
-        sibling_standard:'',
-      }],
-      blood_groups:[],
-      castelist:[],
-      transportlist:[],
-      lists:['auto','rickshaw','taxi'],
-      siblinglist:[{id:'brother' , name:'Brother'} , {id:'sister' , name:'Sister'}],
       errors:[],
       success:null,
-      address:'',
     }
   },
+
+  computed: {
+    computedAge() {
+      if (!this.date_of_birth) return null;
+      const dob = new Date(this.date_of_birth);
+      if (isNaN(dob.getTime())) return null;
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const m = today.getMonth() - dob.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+      return age >= 0 ? age : null;
+    }
+  },
+
   methods:
   {
     getData()
     {
       axios.get('/admin/student').then(response => {
         this.user = response.data;
-        this.setData();   
+        this.setData();
       });
     },
 
@@ -621,14 +388,27 @@ export default {
           this.statelist        = this.user.statelist;
           this.citylist         = this.user.citylist;
           this.standardLinklist = this.user.standardLinklist;
-          this.blood_groups     = this.user.blood_groups;
-          this.castelist        = this.user.castelist;
-          this.transportlist    = this.user.transportlist;
           this.date_of_birth    = this.user.date_of_birth;
           this.joining_date     = this.user.joining_date;
-          this.sibling_date_of_birth     = this.user.joining_date;
-          this.deleteRow(0);
-          this.addRow();
+          this.setHongKongDefaults();
+        }
+      }
+    },
+
+    // Location is fixed to Hong Kong (falls back to the first entries if the
+    // Hong Kong reference rows are not present).
+    setHongKongDefaults()
+    {
+      const lists = this.countrylist || [];
+      const hk = lists.find(c => c.name === 'Hong Kong') || lists[0];
+      if (!hk) return;
+      this.country_id = hk.id;
+      const states = (this.statelist && this.statelist[hk.id]) || [];
+      if (states.length > 0) {
+        this.state_id = states[0].id;
+        const cities = (this.citylist && this.citylist[this.state_id]) || [];
+        if (cities.length > 0) {
+          this.city_id = cities[0].id;
         }
       }
     },
@@ -641,119 +421,57 @@ export default {
       this.email='';
       this.gender='';
       this.date_of_birth='';
-      this.blood_group='';
       this.standard='';
-      this.city_id='';
-      this.state_id='';
-      this.country_id=7;
-      this.pincode='';
-      this.birth_place='';
-      this.native_place='';
       this.mother_tongue='';
-      this.caste='';
-      this.sub_caste='';
-      this.aadhar_number='';
       this.joining_date='';
       this.registration_number='';
-      this.EMIS_number='';
       this.roll_number='';
-      this.id_card_number='';
-      this.board_registration_number='';
-      this.mode_of_transport='';
-      this.driver_name='';
-      this.driver_contact_number='';
-      this.siblings='';
-      this.siblings_count='';
+      this.school_name='';
+      this.grade='';
+      this.alternate_no='';
+      this.guardian_name='';
+      this.guardian_relation='';
+      this.guardian_mobile='';
       this.notes='';
       this.avatar='';
-    }, 
+      this.address='';
+      this.setHongKongDefaults();
+    },
 
     submitForm()
     {
       this.errors=[];
       this.success=null;
 
-      let formData=new FormData(); 
+      let formData=new FormData();
 
-      formData.append('firstname',this.firstname);          
+      formData.append('firstname',this.firstname);
       formData.append('lastname',this.lastname);
-      formData.append('mobile_no',this.mobile_no);          
-      formData.append('email',this.email);           
-      formData.append('gender',this.gender);          
-      formData.append('date_of_birth',this.date_of_birth);       
-      formData.append('blood_group',this.blood_group); 
+      formData.append('mobile_no',this.mobile_no);
+      formData.append('email',this.email);
+      formData.append('gender',this.gender);
+      formData.append('date_of_birth',this.date_of_birth);
       formData.append('standard',this.standard);
       formData.append('city_id',this.city_id);
-      formData.append('state_id',this.state_id);          
-      formData.append('country_id',this.country_id);          
-      formData.append('pincode',this.pincode);
-      formData.append('birth_place',this.birth_place);
-      formData.append('native_place',this.native_place);
+      formData.append('state_id',this.state_id);
+      formData.append('country_id',this.country_id);
       formData.append('mother_tongue',this.mother_tongue);
-      formData.append('caste',this.caste);
-      formData.append('sub_caste',this.sub_caste);
-      formData.append('aadhar_number',this.aadhar_number);  
-      formData.append('joining_date',this.joining_date);  
-      formData.append('registration_number',this.registration_number);  
-      formData.append('EMIS_number',this.EMIS_number);  
-      formData.append('roll_number',this.roll_number);  
-      formData.append('id_card_number',this.id_card_number);  
-      formData.append('board_registration_number',this.board_registration_number);  
-      formData.append('mode_of_transport',this.mode_of_transport);  
-      formData.append('driver_name',this.driver_name);  
-      formData.append('driver_contact_number',this.driver_contact_number);  
-      formData.append('siblings',this.siblings);  
-      formData.append('siblings_count',this.siblings_count);  
-      formData.append('notes',this.notes);          
+      formData.append('joining_date',this.joining_date);
+      formData.append('registration_number',this.registration_number);
+      formData.append('roll_number',this.roll_number);
+      formData.append('school_name',this.school_name);
+      formData.append('grade',this.grade);
+      formData.append('alternate_no',this.alternate_no);
+      formData.append('guardian_name',this.guardian_name);
+      formData.append('guardian_relation',this.guardian_relation);
+      formData.append('guardian_mobile',this.guardian_mobile);
+      formData.append('siblings','no');
+      formData.append('notes',this.notes);
       formData.append('avatar',this.avatar);
       formData.append('address', this.address);
-      formData.append('latitude', this.latitude);
-      formData.append('longitude', this.longitude);
 
-      if(this.siblings == 'yes')
-      {
-        for(let i=0 ; i < this.inputs.length ; i++)
-        {
-          if(typeof this.inputs[i]['sibling_relation'] !== "undefined")
-          {
-            formData.append('sibling_relation'+i,this.inputs[i]['sibling_relation']);
-          }
-          else
-          {
-            formData.append('sibling_relation'+i,'');
-          }
-
-          if(typeof this.inputs[i]['sibling_name'] !== "undefined")
-          {
-            formData.append('sibling_name'+i,this.inputs[i]['sibling_name']);
-          }
-          else
-          {
-            formData.append('sibling_name'+i,'');
-          }
-
-          if(typeof this.inputs[i]['sibling_date_of_birth'] !== "undefined")
-          {
-            formData.append('sibling_date_of_birth'+i,this.inputs[i]['sibling_date_of_birth']);
-          }
-          else
-          {
-            formData.append('sibling_date_of_birth'+i,'');
-          }
-
-          if(typeof this.inputs[i]['sibling_standard'] !== "undefined")
-          {
-            formData.append('sibling_standard'+i,this.inputs[i]['sibling_standard']);
-          }
-          else
-          {
-            formData.append('sibling_standard'+i,'');
-          }
-        }
-      }
-
-      axios.post('/admin/student/add/validationUser',formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {     
-        $('#real-submit-btn').click(); 
+      axios.post('/admin/student/add/validationUser',formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {
+        $('#real-submit-btn').click();
       }).catch(error => {
         this.errors = error.response.data.errors;
       });
@@ -763,31 +481,8 @@ export default {
     {
       this.avatar = event.target.files[0];
     },
-
-    checkInArray(array,value) 
-    {
-      if( array.includes(value) )
-      {
-        return true;
-      }
-    },
-
-    addRow() 
-    {
-      this.inputs.push({
-        sibling_relation:'',
-        sibling_name:'',
-        sibling_date_of_birth:this.sibling_date_of_birth,
-        sibling_standard:'',
-      });
-    },
-
-    deleteRow(index) 
-    {
-      this.inputs.splice(index,1);
-    },
   },
-    
+
   created()
   {
     this.getData();

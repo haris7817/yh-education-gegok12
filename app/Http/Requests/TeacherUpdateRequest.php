@@ -68,11 +68,11 @@ class TeacherUpdateRequest extends FormRequest
         $rules =
         [
             //
-            'firstname'             => 'required|alpha|max:15',
-            'lastname'              => 'nullable|alpha|max:15',
+            'firstname'             => ['required','regex:/^[\p{L}\p{M}\s.\-()]+$/u','max:50'], // HK: allow Chinese
+            'lastname'              => ['nullable','regex:/^[\p{L}\p{M}\s.\-()]+$/u','max:50'], // HK: allow Chinese
             'date_of_birth'         => 'required|date|check_date_of_birth',
             'gender'                => 'required',
-            'blood_group'           => 'required',
+            'blood_group'            => 'nullable',
             'aadhar_number'         => 'nullable|numeric|digits:12',
             'employee_id'           => 'required|alpha_num|checkunique_employee_id',
             'joining_date'          => 'required|date|check_joining_date',

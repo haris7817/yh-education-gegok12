@@ -133,9 +133,20 @@ class UsersImport implements ToCollection, WithHeadingRow
                     }
                 }
 
-                $country = Country::where('name', 'LIKE', '%' . $row['country'] . '%')->first();
-                $state   = State::where('name', 'LIKE', '%' . $row['state'] . '%')->first();
-                $city    = City::where('name', 'LIKE', '%' . $row['city'] . '%')->first();
+                // A blank cell must not LIKE-match '%%' (which returns the first row of
+                // the whole table) — only look up non-blank values.
+                $countryCell = trim((string) ($row['country'] ?? ''));
+                $stateCell   = trim((string) ($row['state'] ?? ''));
+                $cityCell    = trim((string) ($row['city'] ?? ''));
+                $country = $countryCell !== '' ? Country::where('name', 'LIKE', '%' . $countryCell . '%')->first() : null;
+                $state   = $stateCell   !== '' ? State::where('name', 'LIKE', '%' . $stateCell . '%')->first()     : null;
+                $city    = $cityCell    !== '' ? City::where('name', 'LIKE', '%' . $cityCell . '%')->first()       : null;
+
+                // HK localization: blank/unknown location columns fall back to the
+                // Hong Kong reference rows (userprofiles location ids are NOT NULL).
+                $country = $country ?: Country::where('name', 'Hong Kong')->first() ?: Country::first();
+                $state   = $state   ?: State::where('country_id', optional($country)->id)->first() ?: State::first();
+                $city    = $city    ?: City::where('state_id', optional($state)->id)->first() ?: City::first();
 
                 $standard = Standard::where([
                     ['school_id', $school_id],
@@ -224,6 +235,11 @@ class UsersImport implements ToCollection, WithHeadingRow
                 $student->sibling_date_of_birth = str_getcsv((string) $row['sibling_date_of_birth']);
                 $student->sibling_standard      = str_getcsv((string) $row['sibling_class']);
                 $student->notes                 = $row['notes'];
+
+                // HK localization: optional columns (missing columns import as null)
+                $student->school_name           = $row['school_name'] ?? null;
+                $student->grade                 = $row['grade'] ?? null;
+                $student->alternate_no          = $row['home_phone'] ?? null;
 
                 // --- Parent resolution / build ---------------------------------------
                 $parent_status = User::where([

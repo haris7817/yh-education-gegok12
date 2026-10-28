@@ -63,7 +63,6 @@
 @endsection
 
 @push('scripts')
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&key={{ config('services.google_maps.key') }}"></script>
     <script type="text/javascript">
 </script>
 @endpush

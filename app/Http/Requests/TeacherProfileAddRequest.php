@@ -31,12 +31,12 @@ class TeacherProfileAddRequest extends FormRequest
     {
         Validator::extend('check_firstname',function($attribute,$value,$parameters,$validator)
         {
-            return preg_match('/^[A-Za-z\s]+$/', request('firstname')) ;
+            return preg_match("/^[\p{L}\p{M}\s.'\-()]+$/u", request('firstname')) ; // HK: allow Chinese
         });
 
         Validator::extend('check_lastname',function($attribute,$value,$parameters,$validator)
         {
-            return preg_match('/^[A-Za-z\s]+$/', request('lastname')) ;
+            return preg_match("/^[\p{L}\p{M}\s.'\-()]+$/u", request('lastname')) ; // HK: allow Chinese
         });
 
         Validator::extend('checkunique_email',function($attribute,$value,$parameters,$validator)
@@ -109,20 +109,20 @@ class TeacherProfileAddRequest extends FormRequest
         $rules =
         [
             //
-            'firstname'             => 'required|check_firstname|max:15',
-            'lastname'              => 'nullable|check_lastname|max:15',
+            'firstname'             => 'required|check_firstname|max:50',
+            'lastname'              => 'nullable|check_lastname|max:50',
             'date_of_birth'         => 'required|date|check_date_of_birth',
-            'mobile_no'             => 'required|numeric|digits:10|checkunique_mobile',
+            'mobile_no'             => 'required|numeric|digits_between:8,15|checkunique_mobile',
             'email'                 => 'nullable|email|checkunique_email',
             'gender'                => 'required',
-            'blood_group'           => 'required',
+            'blood_group'           => 'nullable',
             'aadhar_number'         => 'nullable|numeric|digits:12|checkunique_aadhar_no',
             //'avatar'                => 'required|mimes:jpg,jpeg,png',
             'employee_id'           => 'required|alpha_num|checkunique_employee_id',
             'joining_date'          => 'required|date|check_joining_date',
             'designation'           => 'required',
             'job_type'              => 'required',
-            'marital_status'        => 'required',
+            'marital_status'        => 'nullable',
         ];
 
         if(Request('staff_status') == 'teaching')

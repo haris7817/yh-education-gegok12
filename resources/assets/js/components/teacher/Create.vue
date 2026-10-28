@@ -5,7 +5,7 @@
       <div class="tw-form-group w-full lg:w-1/3">
         <div class="lg:mr-8 md:mr-8">
           <div class="mb-2">
-            <label for="firstname" class="tw-form-label">First Name<span class="text-red-500">*</span></label>
+            <label for="firstname" class="tw-form-label">English Name<span class="text-red-500">*</span></label>
           </div>
           <div class="mb-2">
           
@@ -18,7 +18,7 @@
        <div class="tw-form-group w-full lg:w-1/3">
         <div class="lg:mr-8 md:mr-8">
           <div class="mb-2">
-            <label for="lastname" class="tw-form-label">Last Name </label>
+            <label for="lastname" class="tw-form-label">Chinese Name 中文姓名</label>
           </div>
           <div class="mb-2">
             
@@ -45,7 +45,7 @@
       <div class="tw-form-group w-full lg:w-1/4">
         <div class="lg:mr-8 md:mr-8">
           <div class="mb-2">
-            <label for="employee_id" class="tw-form-label">Employee ID<span class="text-red-500">*</span></label>
+            <label for="employee_id" class="tw-form-label">Teacher ID<span class="text-red-500">*</span></label>
           </div>
           <div class="mb-2">
             <input type="text" v-model="employee_id" name="employee_id" id="employee_id" class="tw-form-control w-full" placeholder="Employee ID">
@@ -137,7 +137,7 @@
         </div>
       </div>
 
-      <div class="tw-form-group w-full lg:w-2/5">
+      <div v-if="false" class="tw-form-group w-full lg:w-2/5">
         <div class="lg:mr-8 md:mr-8">
           <div class="mb-2">
             <label for="blood_group" class="tw-form-label">Blood Group<span class="text-red-500">*</span></label>
@@ -152,7 +152,7 @@
         </div> 
       </div>
       
-      <div class="tw-form-group w-full lg:w-2/5">
+      <div v-if="false" class="tw-form-group w-full lg:w-2/5">
         <div class="lg:mr-8 md:mr-8">
           <div class="mb-2">
             <label for="aadhar_number" class="tw-form-label">Aadhaar Number</label>
@@ -166,7 +166,7 @@
     </div>
 
     <div class="flex flex-col lg:flex-row">
-      <div class="tw-form-group w-full lg:w-1/3">
+      <div v-if="false" class="tw-form-group w-full lg:w-1/3">
         <div class="lg:mr-8 md:mr-8">
           <div class="mb-2">
             <label for="marital_status" class="tw-form-label">Marital Status<span class="text-red-500">*</span></label>
@@ -276,7 +276,7 @@
             </div> 
         </div>
 
-        <div class="tw-form-group w-full lg:w-1/3">
+        <div v-if="false" class="tw-form-group w-full lg:w-1/3">
             <div class="lg:mr-8 md:mr-8">
                 <div class="mb-2">
                     <label for="interested_in" class="tw-form-label">Interested In</label>

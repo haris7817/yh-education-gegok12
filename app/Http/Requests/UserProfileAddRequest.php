@@ -77,14 +77,15 @@ class UserProfileAddRequest extends FormRequest
             return preg_match('/^[A-Za-z0-9_~\-!@#\$%\^&*.,:(\)\s]+$/', request('notes')) ;
         });
 
+        // HK localization: names may be English or Chinese (unicode letters).
         Validator::extend('check_firstname',function($attribute,$value,$parameters,$validator)
         {
-            return preg_match('/^[A-Za-z\s]+$/', request('firstname')) ;
+            return preg_match('/^[\p{L}\p{M}\s.\'\-()]+$/u', request('firstname')) ;
         });
 
         Validator::extend('check_lastname',function($attribute,$value,$parameters,$validator)
         {
-            return preg_match('/^[A-Za-z\s]+$/', request('lastname')) ;
+            return preg_match('/^[\p{L}\p{M}\s.\'\-()]+$/u', request('lastname')) ;
         });
 
         Validator::extend('check_birth_place',function($attribute,$value,$parameters,$validator)
@@ -127,45 +128,52 @@ class UserProfileAddRequest extends FormRequest
             return true;
         });
 
+        // HK localization (YH Education): blood group / caste / siblings / avatar are
+        // optional; mobile numbers accept HK 8-digit (up to 15); names allow Chinese;
+        // Student ID may be alphanumeric; new optional fields: day school, grade,
+        // home phone, manual address, and a guardian/emergency contact.
         $rules =
         [
             //
-            'firstname'                 => 'required|check_firstname|max:15',
-            'lastname'                  => 'nullable|check_lastname|max:15',
+            'firstname'                 => 'required|check_firstname|max:50',
+            'lastname'                  => 'nullable|check_lastname|max:50',
             'email'                     => 'nullable|email|checkunique_email',
-            'mobile_no'                 => 'nullable|numeric|digits:10|check_mobile_no',
+            'mobile_no'                 => 'nullable|numeric|digits_between:8,15|check_mobile_no',
             'date_of_birth'             => 'required|date|check_date_of_birth',
             'gender'                    => 'required',
-            'blood_group'               => 'required',
+            'blood_group'               => 'nullable',
             'aadhar_number'             => 'nullable|numeric|digits:12|check_unique_aadhar_number',
             'city_id'                   => 'required',
             'state_id'                  => 'required',
             'country_id'                => 'required',
-            'pincode'                   => 'nullable|numeric|digits:6',
+            'pincode'                   => 'nullable|numeric|digits_between:4,10',
             'birth_place'               => 'nullable|check_birth_place',
             'native_place'              => 'nullable|check_native_place',
             'mother_tongue'             => 'required|check_mother_tongue',
-            'caste'                     => 'required',
-            'avatar'                    => 'required|mimes:jpg,jpeg,png',
+            'caste'                     => 'nullable',
+            'avatar'                    => 'nullable|mimes:jpg,jpeg,png',
             'notes'                     => 'nullable|string|checknotes',
-            'registration_number'       => 'required|numeric',
+            'registration_number'       => ['required','regex:/^[A-Za-z0-9\-\/]+$/','max:30'],
             'EMIS_number'               => 'nullable|numeric',
             'joining_date'              => 'required|date|check_joining_date',
             'standard'                  => 'required',
             'roll_number'               => 'required|numeric',
-            'id_card_number'            => 'nullable|numeric',  
+            'id_card_number'            => 'nullable|numeric',
             'mode_of_transport'         => 'nullable',
-            'siblings'                  => 'required',
+            'siblings'                  => 'nullable',
             'board_registration_number' => 'nullable|numeric',
+            'school_name'               => 'nullable|max:150',
+            'grade'                     => 'nullable|max:50',
+            'alternate_no'              => 'nullable|numeric|digits_between:8,15',
+            'address'                   => 'nullable|max:500',
+            'guardian_mobile'           => 'nullable|numeric|digits_between:8,15',
+            'guardian_name'             => ['required_with:guardian_mobile','nullable','regex:/^[\p{L}\p{M}\s.\'\-()]+$/u','max:100'],
+            'guardian_relation'         => 'required_with:guardian_mobile|nullable|in:father,mother,guardian',
         ];
 
-        $standardLink = StandardLink::where('school_id',Auth::user()->school_id)->where('id',request('standard'))->first();
-        $standard = Standard::where('school_id',Auth::user()->school_id)->where('id',$standardLink->standard_id)->first();
-
-        if( ( $standard->name == '10' ) || ( $standard->name == '11' )  || ( $standard->name == '12' ) )
-        {
-            $rules['board_registration_number'] = 'required|numeric'; 
-        }
+        // Note: the upstream rule making board_registration_number mandatory for
+        // classes named 10/11/12 was removed for the tutorial-centre workflow
+        // (the field is hidden in the simplified form and stays optional).
 
         if( (request('mode_of_transport') == 'auto') || (request('mode_of_transport') == 'rickshaw') || (request('mode_of_transport') == 'taxi') )
         {
@@ -221,8 +229,17 @@ class UserProfileAddRequest extends FormRequest
 
             'mobile_no.required'                                => 'Mobile Number Is Required',
             'mobile_no.numeric'                                 => 'Mobile Number Should Be Numeric',
-            'mobile_no.digits:10'                               => 'Mobile Number Should Be 10 Digits',
+            'mobile_no.digits_between'                          => 'Mobile Number Should Be 8 To 15 Digits',
             'mobile_no.check_mobile_no'                         => 'Mobile Number Already In Use. Enter Different Mobile Number',
+
+            'registration_number.regex'                         => 'Student ID May Contain Letters, Numbers, - And / Only',
+            'alternate_no.numeric'                              => 'Home Phone Should Be Numeric',
+            'alternate_no.digits_between'                       => 'Home Phone Should Be 8 To 15 Digits',
+            'guardian_mobile.numeric'                           => 'Guardian Phone Should Be Numeric',
+            'guardian_mobile.digits_between'                    => 'Guardian Phone Should Be 8 To 15 Digits',
+            'guardian_name.required_with'                       => 'Guardian Name Is Required When A Guardian Phone Is Given',
+            'guardian_name.regex'                               => 'Enter A Valid Guardian Name',
+            'guardian_relation.required_with'                   => 'Guardian Relationship Is Required When A Guardian Phone Is Given',
 
             'date_of_birth.required'                            => 'Date Of Birth Is Required',
             'date_of_birth.check_date_of_birth'                 => 'Date Of Birth Should Be Greater Than '.$start.' Or Lesser Than '.$end,
@@ -263,7 +280,7 @@ class UserProfileAddRequest extends FormRequest
             'notes.string'                                      => 'Enter Valid Notes',
             'notes.checknotes'                                  => 'Enter Valid Notes',
 
-            'registration_number.required'                      => 'Registration Number Is Required',
+            'registration_number.required'                      => 'Student ID Is Required',
             'registration_number.numeric'                       => 'Registration Number Should Be Numeric',
 
             'EMIS_number.required'                              => 'EMIS Number Is Required',

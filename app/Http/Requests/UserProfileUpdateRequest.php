@@ -54,14 +54,15 @@ class UserProfileUpdateRequest extends FormRequest
             return false;
         });
 
+        // HK localization: names may be English or Chinese (unicode letters).
         Validator::extend('check_firstname',function($attribute,$value,$parameters,$validator)
         {
-            return preg_match('/^[A-Za-z\s]+$/', request('firstname')) ;
+            return preg_match('/^[\p{L}\p{M}\s.\'\-()]+$/u', request('firstname')) ;
         });
 
         Validator::extend('check_lastname',function($attribute,$value,$parameters,$validator)
         {
-            return preg_match('/^[A-Za-z\s]+$/', request('lastname')) ;
+            return preg_match('/^[\p{L}\p{M}\s.\'\-()]+$/u', request('lastname')) ;
         });
 
         Validator::extend('checknotes',function($attribute,$value,$parameters,$validator)
@@ -100,33 +101,41 @@ class UserProfileUpdateRequest extends FormRequest
             return true;
         });
 
+        // HK localization (YH Education) — mirrors UserProfileAddRequest.
         $rules =
         [
             //
-            'firstname'                 => 'required|check_firstname|max:15',
-            'lastname'                  => 'nullable|check_lastname|max:15',
+            'firstname'                 => 'required|check_firstname|max:50',
+            'lastname'                  => 'nullable|check_lastname|max:50',
             'date_of_birth'             => 'required|date|check_date_of_birth',
             'gender'                    => 'required',
-            'blood_group'               => 'required',
+            'blood_group'               => 'nullable',
             'aadhar_number'             => 'nullable|numeric|digits:12|check_unique_aadhar_number',
             'city_id'                   => 'required',
             'state_id'                  => 'required',
             'country_id'                => 'required',
-            'pincode'                   => 'nullable|numeric|digits:6',
+            'pincode'                   => 'nullable|numeric|digits_between:4,10',
             'birth_place'               => 'nullable|check_birth_place',
             'native_place'              => 'nullable|check_native_place',
             'mother_tongue'             => 'required|check_mother_tongue',
-            'caste'                     => 'required',
+            'caste'                     => 'nullable',
             'notes'                     => 'nullable|string|checknotes',
-            'registration_number'       => 'required|numeric',
+            'registration_number'       => ['required','regex:/^[A-Za-z0-9\-\/]+$/','max:30'],
             'EMIS_number'               => 'nullable|numeric',
             'joining_date'              => 'required|date|check_joining_date',
             'standard'                  => 'required',
             'roll_number'               => 'required|numeric',
-            'id_card_number'            => 'nullable|numeric',   
+            'id_card_number'            => 'nullable|numeric',
             'mode_of_transport'         => 'nullable',
-            'siblings'                  => 'required', 
+            'siblings'                  => 'nullable',
             'board_registration_number' => 'nullable|numeric',
+            'school_name'               => 'nullable|max:150',
+            'grade'                     => 'nullable|max:50',
+            'alternate_no'              => 'nullable|numeric|digits_between:8,15',
+            'address'                   => 'nullable|max:500',
+            'guardian_mobile'           => 'nullable|numeric|digits_between:8,15',
+            'guardian_name'             => ['required_with:guardian_mobile','nullable','regex:/^[\p{L}\p{M}\s.\'\-()]+$/u','max:100'],
+            'guardian_relation'         => 'required_with:guardian_mobile|nullable|in:father,mother,guardian',
         ];
 
         if(\Request('avatar')!= '')
@@ -227,7 +236,7 @@ class UserProfileUpdateRequest extends FormRequest
             'notes.string'                                      => 'Enter Valid Notes',
             'notes.checknotes'                                  => 'Enter Valid Notes',
 
-            'registration_number.required'                      => 'Registration Number Is Required',
+            'registration_number.required'                      => 'Student ID Is Required',
             'registration_number.numeric'                       => 'Registration Number Should Be Numeric',
 
             'EMIS_number.required'                              => 'EMIS Number Is Required',

@@ -226,6 +226,11 @@ export default {
     methods:
     {
       initMap() {
+                // Google Maps is no longer loaded (requires an API key/billing);
+                // the official address is entered manually instead.
+                if (typeof window.google === 'undefined' || !window.google.maps) {
+                    return;
+                }
                 const defaultLat = 9.9252007;
                 const defaultLng = 78.1197754;
 
@@ -278,6 +283,9 @@ export default {
             },
 
             codeAddress() {
+                if (!this.geocoder) {
+                    return; // maps disabled — address is manual
+                }
                 this.geocoder.geocode(
                     { address: this.official_address },
                     (results, status) => {

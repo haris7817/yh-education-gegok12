@@ -219,6 +219,10 @@ class StudentController extends Controller
         }
 
         $user = $this->CreateUser($request , $school_id , $academic_year->id , $path , 6);
+
+        // HK localization: optional guardian / emergency contact entered on the form
+        $this->syncGuardian($user , $request , $school_id);
+
         $mes = trans('messages.add_success_msg',['module' => 'Student']);
 
         $ip= $this->getRequestIP();
@@ -276,13 +280,36 @@ class StudentController extends Controller
       $array['EMIS_number']               = $userprofile->EMIS_number==NULL ? '':$userprofile->EMIS_number;
       $array['joining_date']              = $userprofile->joining_date==NULL ? '':date('Y-m-d',strtotime($userprofile->joining_date));
 
+      // HK localization fields
+      $array['address']                   = $userprofile->address==NULL ? '':$userprofile->address;
+      $array['alternate_no']              = $userprofile->alternate_no==NULL ? '':$userprofile->alternate_no;
+      $array['school_name']               = $userprofile->school_name==NULL ? '':$userprofile->school_name;
+      $array['grade']                     = $userprofile->grade==NULL ? '':$userprofile->grade;
+
+      // Guardian / emergency contact (first linked parent, if any)
+      $guardian = $user->parents()->first();
+      if($guardian && $guardian->userParent)
+      {
+        $guardianProfile = Userprofile::where('user_id',$guardian->userParent->id)->first();
+        $parentProfile   = \App\Models\ParentProfile::where('user_id',$guardian->userParent->id)->first();
+        $array['guardian_name']     = trim(($guardianProfile->firstname ?? '').' '.($guardianProfile->lastname ?? ''));
+        $array['guardian_relation'] = $parentProfile->relation ?? '';
+        $array['guardian_mobile']   = $guardian->userParent->mobile_no ?? '';
+      }
+      else
+      {
+        $array['guardian_name']     = '';
+        $array['guardian_relation'] = '';
+        $array['guardian_mobile']   = '';
+      }
+
       $array['standardLink_id']           = $studentAcademic->standardLink_id;
       $array['roll_number']               = $studentAcademic->roll_number==NULL ? '':$studentAcademic->roll_number;
       $array['id_card_number']            = $studentAcademic->id_card_number==NULL ? '':$studentAcademic->id_card_number;
       $array['board_registration_number'] = $studentAcademic->board_registration_number==NULL ? '':$studentAcademic->board_registration_number;
       $array['mode_of_transport']         = $studentAcademic->mode_of_transport;
-      $array['driver_name']               = $studentAcademic->transport_details['driver_name'];
-      $array['driver_contact_number']     = $studentAcademic->transport_details['driver_contact_number'];
+      $array['driver_name']               = $studentAcademic->transport_details['driver_name'] ?? '';
+      $array['driver_contact_number']     = $studentAcademic->transport_details['driver_contact_number'] ?? '';
       $array['siblings']                  = $studentAcademic->siblings;
       $array['siblings_count']            = $studentAcademic->siblings_count;
 
@@ -378,6 +405,9 @@ class StudentController extends Controller
 
         $userprofile = $this->UpdateUser($request , $school_id , $academic_year->id ,$user->id , $path);
 
+        // HK localization: optional guardian / emergency contact entered on the form
+        $this->syncGuardian($user , $request , $school_id);
+
         $message=trans('messages.update_success_msg',['module' => 'Student']);
 
         $ip= $this->getRequestIP();
@@ -397,6 +427,113 @@ class StudentController extends Controller
       } 
     }
     
+    /**
+     * Create, link or update a guardian / emergency contact for a student.
+     *
+     * HK localization (YH Education): the simplified student form carries three
+     * optional fields — guardian_name, guardian_relation, guardian_mobile.
+     * Behaviour mirrors the Excel importer: an existing parent account with the
+     * same mobile number is linked (never duplicated); otherwise the student's
+     * already-linked parent is updated; otherwise a new parent account is
+     * created. Parent login/API accounts are preserved — nothing is replaced
+     * by a plain-text field, and students without a guardian are untouched.
+     *
+     * @param \App\Models\User|null $student
+     * @param \Illuminate\Http\Request $request
+     * @param int $school_id
+     * @return void
+     */
+    private function syncGuardian($student , $request , $school_id)
+    {
+        if( is_null($student) || !$request->filled('guardian_mobile') || !$request->filled('guardian_name') )
+        {
+            return;
+        }
+
+        try
+        {
+            $names     = preg_split('/\s+/', trim($request->guardian_name), 2);
+            $firstname = $names[0];
+            $lastname  = $names[1] ?? null;
+            $relation  = $request->filled('guardian_relation') ? $request->guardian_relation : 'guardian';
+
+            // 1. An existing parent account with this mobile number → link it.
+            $parent = User::where([
+                ['school_id',$school_id],
+                ['usergroup_id',7],
+                ['mobile_no',$request->guardian_mobile],
+            ])->first();
+
+            // 2. Otherwise, the student's already-linked parent → update it.
+            if( is_null($parent) )
+            {
+                $link = StudentParentLink::where([
+                    ['school_id',$school_id],
+                    ['student_id',$student->id],
+                ])->first();
+
+                if( $link )
+                {
+                    $candidate = User::where('id',$link->parent_id)->first();
+
+                    // Only take over the mobile number if no other account holds it.
+                    $taken = $candidate ? User::where('mobile_no',$request->guardian_mobile)
+                        ->where('id','!=',$candidate->id)->exists() : true;
+
+                    if( $candidate && !$taken )
+                    {
+                        $parent = $candidate;
+                        $parent->mobile_no = $request->guardian_mobile;
+                        $parent->save();
+                    }
+                }
+            }
+
+            // 3. Otherwise create a new parent account (same shape as the importer).
+            if( is_null($parent) )
+            {
+                $parent = new User;
+                $parent->school_id    = $school_id;
+                $parent->usergroup_id = 7;
+                $parent->mobile_no    = $request->guardian_mobile;
+                $parent->password     = bcrypt(\Illuminate\Support\Str::random(16));
+                $parent->email_verification_code = \Illuminate\Support\Str::random(40);
+                $parent->save();
+            }
+
+            // Keep the guardian's displayed details current.
+            $profile = Userprofile::firstOrNew(['user_id' => $parent->id]);
+            $profile->school_id    = $school_id;
+            $profile->usergroup_id = 7;
+            $profile->firstname    = $firstname;
+            $profile->lastname     = $lastname;
+            if( !$profile->exists || is_null($profile->status) )
+            {
+                $profile->status = 'active';
+            }
+            $profile->save();
+
+            $parentProfile = \App\Models\ParentProfile::firstOrNew(['user_id' => $parent->id]);
+            $parentProfile->school_id = $school_id;
+            $parentProfile->relation  = $relation;
+            $parentProfile->save();
+
+            // Ensure the student ↔ parent link exists exactly once.
+            StudentParentLink::firstOrCreate(
+                [
+                    'school_id'  => $school_id,
+                    'student_id' => $student->id,
+                    'parent_id'  => $parent->id,
+                ],
+                [ 'status' => 1 ]
+            );
+        }
+        catch(Exception $e)
+        {
+            \Log::info('syncGuardian: '.$e->getMessage());
+        }
+    }
+
     /**
      * Delete student and related records.
      *
